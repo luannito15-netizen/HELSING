@@ -1,0 +1,39 @@
+{
+  "name": "Nosferatu Alucard",
+  "height_m": 1.98,
+  "body": "tall_slender_long_limbs",
+  "base_form": {
+    "hat": "wide_brim_red",
+    "glasses": "round",
+    "coat": "long_red_mid_calf",
+    "suit": "black",
+    "tie_cravat": "red",
+    "gloves": "light",
+    "boots": "black",
+    "hair": "black_irregular"
+  },
+  "weapons": {
+    "right_hand": {
+      "name": "Jackal",
+      "color": "black",
+      "reference_length_mm": 390
+    },
+    "left_hand": {
+      "name": "Hellsing Arms .454 Casull",
+      "color": "silver_light",
+      "reference_length_mm": 335
+    }
+  },
+  "current_blockout_actions": [
+    "lengthen_legs_15_to_20_percent_approx",
+    "slightly_lengthen_arms",
+    "slim_torso_and_waist",
+    "reduce_blocky_boots",
+    "improve_coat_and_separate_tails",
+    "add_simple_hair_mass",
+    "slightly_enlarge_hands",
+    "increase_weapon_silhouette_difference",
+    "advance_to_gameplay_midpoly",
+    "create_provisional_rig_and_skinning"
+  ]
+}

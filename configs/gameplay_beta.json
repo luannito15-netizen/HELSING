@@ -1,0 +1,42 @@
+{
+  "project": "HELSING",
+  "phase": "pre-production playable",
+  "platform": "mobile",
+  "orientation": "landscape",
+  "camera": {
+    "style": "elevated_3_4_diablo_like",
+    "rotation": "fixed_initially",
+    "starting_angle_from_vertical_deg": 35,
+    "starting_lens_mm": [
+      40,
+      45
+    ],
+    "status": "starting_values_not_final"
+  },
+  "input": {
+    "movement": "left_virtual_stick",
+    "primary_attack": {
+      "tap": "auto_target",
+      "drag": "manual_aim"
+    },
+    "active_power_slots": 2,
+    "dash": true,
+    "weapon_swap": true,
+    "release_button": true
+  },
+  "beta": {
+    "active_power_pool": [
+      "Predação",
+      "Familiar Sombrio",
+      "Marca Carmesim",
+      "Maré de Sangue"
+    ],
+    "active_powers_equipped": 2,
+    "max_souls": 3,
+    "reference_builds": [
+      "Gunslinger",
+      "Vampiro",
+      "Híbrido"
+    ]
+  }
+}

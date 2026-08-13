@@ -1,0 +1,58 @@
+# Blender source files (*.blend) are intentionally versioned.
+
+# Blender automatic backups
+*.blend1
+*.blend2
+*.blend3
+*.blend@
+*.blend~
+
+# Local Blender/Python caches
+__pycache__/
+*.pyc
+
+# ---------------------------------------------------------------------------
+# Unity — applies to unity/ and unity-bootstrap/ (and any future Unity project)
+# ---------------------------------------------------------------------------
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+
+# Unity generated IDE/project files (regenerated on open)
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity crash logs
+sysinfo.txt
+*.stackdump
+
+# Unity asset importer / addressables caches
+[Aa]ssets/AssetStoreTools*
+.vsconfig
+
+# ---------------------------------------------------------------------------
+# IDE / OS
+# ---------------------------------------------------------------------------
+.vs/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
