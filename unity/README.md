@@ -8,11 +8,15 @@ Este é o **projeto Unity oficial e ativo** do HELSING (ÚNICO projeto de produ�
 - Input System 1.20.0.
 - Unity MCP (CoplayDev) 10.0.0 instalado (`com.coplaydev.unity-mcp`).
 - Estrutura `Assets/_Game/` já existe.
-- Nenhum script, prefab ou asset de gameplay próprio foi criado ainda dentro de `Assets/_Game/` (apenas `.gitkeep`).
+- Nenhum script, prefab ou asset de gameplay próprio foi criado ainda dentro de `Assets/_Game/`; há somente pastas, seus `.meta` e placeholders de versionamento.
 - Única cena existente: `Assets/Scenes/SampleScene.unity`.
 
 ## Projeto legado
 `../unity-bootstrap/` é **LEGACY / DO NOT USE**. Não é o projeto ativo. Ver aviso na raiz do repositório.
+
+## Operação por agentes
+
+Antes de alterar o Editor, seguir `../AGENTS.md` e `../docs/technical/UNITY_MCP.md`. Apenas um agente pode escrever via Unity MCP por vez; Codex é o writer padrão e Claude Code é read-only por padrão.
 
 ## Cena inicial planejada
 Nome recomendado:

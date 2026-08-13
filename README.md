@@ -15,11 +15,12 @@ Pacote de continuidade do projeto do jogo mobile inspirado em **Hellsing**, orga
 
 ## Comece por aqui
 
-1. Leia `handoff/HANDOFF_TO_VSCODE.md`.
-2. Leia `docs/production/PROJECT_STATE.md`.
-3. Leia `docs/technical/UNITY_VSCODE_PIPELINE.md`.
-4. Consulte `docs/character/ALUCARD_CHARACTER_BIBLE.md`.
-5. Consulte `docs/gameplay/GAMEPLAY_CORE.md`.
+1. Leia `AGENTS.md` e `agents/specialists/README.md`.
+2. Leia `handoff/AI_CONTEXT.md` e `handoff/HANDOFF_TO_VSCODE.md`.
+3. Leia `docs/production/DECISIONS_LOG.md`, `docs/production/PROJECT_STATE.md` e `docs/production/NEXT_STEPS.md`.
+4. Carregue o perfil especialista adequado à tarefa.
+5. Para trabalho técnico no Unity, consulte `docs/technical/UNITY_VSCODE_PIPELINE.md` e `docs/technical/UNITY_MCP.md`.
+6. Consulte a documentação específica de personagem ou gameplay somente conforme o escopo.
 
 ## Importante
 
@@ -30,3 +31,7 @@ O source de produção atual está em `blender/characters/alucard/source/ALUCARD
 
 - `unity/` — **projeto Unity oficial e ativo** (único projeto de produção do HELSING). Unity 6000.5.8f1, URP 17.5.0, Input System 1.20.0, Unity MCP 10.0.0 instalado. Estrutura `Assets/_Game/` já existe, ainda sem scripts/prefabs de gameplay próprios.
 - `unity-bootstrap/` — **LEGACY / DO NOT USE**. Projeto Unity anterior, preservado apenas como referência histórica. Não usar como base para desenvolvimento.
+
+## Colaboração por agentes
+
+Codex é o implementer principal e Unity MCP writer padrão. Claude Code é o reviewer principal e read-only por padrão; só implementa com `OWNER: CLAUDE CODE` explícito. O sistema oficial de especialistas e os estados `LOCKED`, `WORKING`, `OPEN` e `TUNING / OPEN` estão definidos em `agents/specialists/README.md`.

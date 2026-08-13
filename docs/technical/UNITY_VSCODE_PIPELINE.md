@@ -35,8 +35,10 @@ Responsável por:
 
 ## Motor
 
-Direção atual:
-**Unity 6 + URP**.
+Projeto oficial atual:
+**`unity/` — Unity 6000.5.8f1 + URP 17.5.0 + Input System 1.20.0**.
+
+O projeto já foi criado. `unity-bootstrap/` é `LEGACY / DO NOT USE`.
 
 ## Formato 3D
 Padrão planejado:
@@ -70,11 +72,12 @@ Programar gameplay com placeholder enquanto o Alucard evolui no Blender.
 
 Depois substituir o placeholder pelo personagem sem reescrever o núcleo do jogo.
 
-## Primeiro projeto Unity
+## Estado da fundação
 
-Criar via Unity Hub:
-- Unity 6;
-- template URP;
-- projeto 3D;
-- Git recomendado;
-- abrir a pasta raiz do projeto no VS Code.
+- projeto Unity criado e validado em `unity/`;
+- estrutura `Assets/_Game/` criada;
+- Unity MCP 10.0.0 instalado;
+- cena `Prototype_Arena_01` ainda não criada;
+- scripts, prefabs e gameplay próprios ainda não implementados.
+
+O próximo trabalho técnico é implementar o primeiro loop com placeholder dentro de `unity/`, sob o perfil Unity Architect. Operações do Editor seguem `docs/technical/UNITY_MCP.md`.

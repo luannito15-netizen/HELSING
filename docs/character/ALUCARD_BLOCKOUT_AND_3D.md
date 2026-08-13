@@ -161,7 +161,7 @@ O FBX atual contém personagem, armature de 40 bones e animações, mas a inspe�
 
 - altura geométrica acima dos 1,98 m definidos;
 - FBX atual sem os meshes/materiais das armas;
-- nenhuma integração Unity realizada;
+- projeto Unity oficial existente em `unity/`, mas personagem ainda não importado nem validado; integração `OPEN / DEFERRED` enquanto o asset estiver congelado;
 - nenhuma validação de Animator, avatar humanoide, root motion ou runtime;
 - nenhuma textura externa fornecida;
 - qualidade visual e deformações ainda precisam ser validadas na câmera e no dispositivo reais.

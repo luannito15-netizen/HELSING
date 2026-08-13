@@ -1,6 +1,8 @@
 # Decisions Log
 
-## Fechado
+## LOCKED — Fechado
+
+Todas as decisões desta seção estão `LOCKED`. Podem ser implementadas e validadas, mas só mudam com aprovação explícita do Game Director e atualização deste registro.
 
 ### Plataforma e perspectiva
 - Beta: mobile.
@@ -59,6 +61,14 @@ Pool aprovado (não "candidatos"). Continuam OPEN: valores, custos, cooldown, co
 - Unity: jogo.
 - VS Code: lógica C# e organização do código.
 - Formato padrão planejado para transporte 3D: FBX.
+
+### Governança multi-agent e projeto oficial
+- O único projeto Unity de produção é `unity/`.
+- `unity-bootstrap/` é `LEGACY / DO NOT USE`.
+- Os quatro perfis oficiais do primeiro playable estão em `agents/specialists/`.
+- Codex é o implementer principal; Claude Code é o reviewer principal e read-only por padrão.
+- Claude Code só implementa quando uma tarefa declarar `OWNER: CLAUDE CODE`.
+- Apenas um agente pode escrever no Unity MCP por vez.
 
 ### Asset 3D oficial do Alucard
 - Existe um asset Pré-Alpha oficial do Alucard no repositório: `blender/characters/alucard/source/ALUCARD_PREALPHA_V01.blend`.

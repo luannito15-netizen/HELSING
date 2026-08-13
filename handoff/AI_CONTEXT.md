@@ -4,11 +4,11 @@ Use este arquivo como contexto persistente para um assistente de código.
 
 Você está trabalhando no projeto HELSING, um jogo mobile de ação em Unity 6 + URP, programado em C# com VS Code. A câmera é 3/4 elevada estilo Diablo. O Beta é landscape e o primeiro personagem é Nosferatu Alucard.
 
-Não reinvente decisões fechadas sem motivo técnico comprovado.
+Não altere decisões `LOCKED`. Um problema técnico comprovado deve ser documentado e escalado ao Game Director; só depois de aprovação e atualização do registro a decisão pode mudar.
 
 ## ACTIVE UNITY PROJECT
 
-`unity/` — projeto Unity oficial e ativo, único projeto de produção do HELSING. Já inicializado e aberto no Editor: Unity 6000.5.8f1, URP 17.5.0, Input System 1.20.0, Unity MCP (CoplayDev) 10.0.0. `Assets/_Game/` já existe, ainda sem scripts/prefabs de gameplay próprios (apenas `.gitkeep`). Única cena existente: `Assets/Scenes/SampleScene.unity`.
+`unity/` — projeto Unity oficial e ativo, único projeto de produção do HELSING. Já inicializado e validado anteriormente no Editor: Unity 6000.5.8f1, URP 17.5.0, Input System 1.20.0, Unity MCP (CoplayDev) 10.0.0. `Assets/_Game/` já existe, ainda sem scripts/prefabs de gameplay próprios; há somente a estrutura de pastas, seus `.meta` e placeholders de versionamento. Única cena existente: `Assets/Scenes/SampleScene.unity`. Não presumir que o Editor ou servidor MCP esteja aberto na sessão atual.
 
 `unity-bootstrap/` = **LEGACY / DO NOT USE**. Projeto Unity anterior, preservado como referência histórica. Não usar como base de desenvolvimento nem apagar sem autorização.
 
@@ -18,15 +18,15 @@ Não reinvente decisões fechadas sem motivo técnico comprovado.
 - Codex = default Implementer.
 - Claude Code = default Reviewer.
 
-Papéis podem ser trocados explicitamente por tarefa. Toda tarefa deve declarar ROLE, OWNER, WRITE SCOPE, READ SCOPE. Ver `agents/AGENT_COORDINATION.md` para o protocolo completo.
+Papéis podem ser trocados explicitamente por tarefa. Antes de agir, ler `AGENTS.md`, `agents/AGENT_COORDINATION.md` e `agents/specialists/README.md`, então carregar o perfil adequado. Toda tarefa com escrita deve declarar ROLE, OWNER, REVIEWER, WRITE SCOPE, READ SCOPE, OUT OF SCOPE, DECISION STATE e VALIDATION.
 
 ## UNITY MCP RULE
 
-One writer at a time. Default: Codex = Unity MCP WRITE OWNER; Claude = Unity MCP READ/REVIEW. Claude só escreve no Unity quando uma tarefa futura declarar explicitamente `UNITY MCP WRITE OWNER: CLAUDE`.
+One writer at a time. Default: Codex = Unity MCP WRITE OWNER; Claude = Unity MCP READ/REVIEW. Claude só escreve no Unity quando uma tarefa futura declarar explicitamente `OWNER: CLAUDE CODE` e `UNITY MCP WRITE OWNER: CLAUDE`. Consultar `docs/technical/UNITY_MCP.md` antes de operar o Editor.
 
 ## AUTOMATION RULE
 
-Ordem de prioridade: MCP → arquivos/API → CLI/terminal. Evitar computer-use/controle genérico do Windows; usar apenas como último recurso explícito quando não houver alternativa estruturada.
+Usar Unity MCP para estado estruturado do Editor; arquivos/API direta para documentação, código e configuração versionada; CLI/terminal para busca, versionamento, build, testes e diagnósticos. Evitar computer-use/controle genérico do Windows; usar apenas como último recurso explícito quando não houver alternativa estruturada.
 
 ## ALUCARD
 
@@ -52,7 +52,7 @@ Limitações verificadas:
 - FBX existente sem os meshes/materiais da Jackal e Casull;
 - integração Unity ainda OPEN.
 
-Decisões fechadas:
+Decisões `LOCKED`:
 - Alucard é o primeiro personagem.
 - 1,98 m; corpo alto/esguio; braços/pernas longos.
 - Chapéu vermelho de aba muito larga.

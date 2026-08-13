@@ -125,7 +125,7 @@ ALUCARD_GAMEPLAY_V02.blend
 | Cast | DONE | Action `ALU_CastPower`. |
 | Liberação | DONE | Action de ativação `ALU_ReleaseStart`. |
 | Export FBX | PARTIAL | FBX existente contém armature e animações, mas a inspeção não encontrou os meshes/materiais da Jackal e Casull. |
-| Integração Unity | OPEN | Projeto Unity ainda não inicializado. |
+| Integração Unity | OPEN / DEFERRED | Projeto Unity existe em `unity/`, mas o personagem ainda não foi importado/validado. O asset permanece FROZEN até evidência concreta dos testes com placeholder. |
 
 ## Existing Exports
 

@@ -1,6 +1,8 @@
 # START HERE
 
-Objetivo: retomar o projeto no VS Code sem reler a conversa inteira.
+Objetivo: retomar o projeto sem depender do histórico da conversa.
+
+Antes de agir, leia `AGENTS.md`, `agents/specialists/README.md`, `handoff/AI_CONTEXT.md`, `docs/production/DECISIONS_LOG.md`, `docs/production/PROJECT_STATE.md` e `docs/production/NEXT_STEPS.md`. Depois carregue o perfil especialista adequado.
 
 ## 1. O que estamos construindo
 
@@ -39,12 +41,13 @@ Critério de saída:
 
 ## 4. Ordem recomendada
 
-1. Criar projeto Unity 6 URP.
-2. Abrir a pasta do projeto no VS Code.
-3. Criar estrutura `Assets/_Game/`.
-4. Implementar Player + Input + Camera com placeholder.
-5. Implementar Targeting + Weapons + Dash.
-6. Criar inimigo dummy.
-7. Integrar Alucard quando o rig provisório estiver pronto.
-8. Integrar um poder.
-9. Testar no celular cedo.
+1. Operar somente o projeto oficial já existente em `unity/`.
+2. Declarar especialista, owner, escopo, estados de decisão e validação da sprint.
+3. Implementar Player + Input + Camera com placeholder.
+4. Implementar Targeting + Weapons + Dash.
+5. Criar inimigo dummy e vida/dano/morte.
+6. Integrar um poder provisório, mantendo valores como `TUNING / OPEN`.
+7. Testar na câmera real e no celular cedo.
+8. Integrar o Alucard somente depois que o loop com placeholder existir e a integração for autorizada.
+
+`ALUCARD_PREALPHA_V01` está congelado. Não alterar o `.blend` nem reexportar o personagem sem evidência concreta do Unity e autorização específica.

@@ -6,6 +6,10 @@ Copie este arquivo para o contexto do agente de código se precisar retomar o pr
 
 Continuar o desenvolvimento do projeto HELSING como jogo mobile de ação em Unity.
 
+## Protocolo obrigatório
+
+Antes de agir, ler `AGENTS.md`, `agents/specialists/README.md`, `handoff/AI_CONTEXT.md`, `docs/production/DECISIONS_LOG.md`, `docs/production/PROJECT_STATE.md` e `docs/production/NEXT_STEPS.md`; depois carregar o especialista adequado. Codex é implementer principal, Claude Code é reviewer read-only por padrão, e apenas um agente escreve no Unity MCP por vez.
+
 ## Stack atual
 - Unity 6000.5.8f1 — projeto real já inicializado em `unity/` (URP 17.5.0, Input System 1.20.0, Unity MCP 10.0.0). Este é o **único projeto Unity oficial de produção**.
 - `unity-bootstrap/` é um projeto Unity anterior, classificado **LEGACY / DO NOT USE** — não usar como base.
@@ -73,7 +77,9 @@ Limitações verificadas:
 
 - altura geométrica aproximada de 2,19 m até o cabelo, acima dos 1,98 m LOCKED;
 - FBX existente contém personagem, rig e animações, mas não apresentou os meshes/materiais das armas na inspeção de importação;
-- nenhuma integração Unity realizada.
+- o personagem ainda não foi importado nem validado no projeto Unity oficial.
+
+`ALUCARD_PREALPHA_V01` está **FROZEN FOR FIRST GAMEPLAY TESTS**. Essas limitações estão registradas, mas não autorizam corrigir, reexportar ou salvar o `.blend` antes que o loop com placeholder revele um problema concreto no Unity.
 
 O render antigo permanece preservado em:
 
@@ -163,3 +169,5 @@ Criar:
 - `DummyEnemy`.
 
 Depois testar tudo em `Prototype_Arena_01`.
+
+Especialista principal esperado: **Unity Architect**. O Alucard permanece fora do escopo até autorização específica de integração.
