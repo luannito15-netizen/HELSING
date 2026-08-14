@@ -1,6 +1,6 @@
 ---
 name: helsing-route-task
-description: Rotear toda tarefa do HELSING antes de analisar, revisar, documentar ou implementar. Usar no início de pedidos sobre gameplay, Unity, C#, Blender, Alucard, animação, combate, mobile, documentação ou coordenação para validar freshness, escolher Fast ou Full Context, classificar risco e review mode, selecionar especialista e bloquear escrita não autorizada.
+description: Rotear toda tarefa do HELSING antes de analisar, revisar, documentar ou implementar. Usar no início de pedidos sobre gameplay, Unity, C#, Blender, Alucard, animação, combate, mobile, documentação ou coordenação para validar freshness, escolher Fast ou Full Context, aplicar Token Guard, classificar risco/review, selecionar especialista e bloquear escrita não autorizada.
 ---
 
 # Rotear tarefa HELSING
@@ -21,6 +21,18 @@ Usar Fast Context quando o handoff for confiável e nenhum gatilho de Full Conte
 Usar Full Context nos gatilhos de `AGENTS.md`, incluindo handoff ausente/`PARTIAL`/`STALE`, worktree incompatível, mudança relevante desconhecida, conflito `LOCKED`, nova sprint/arquitetura, review `PARTIAL`/`BLOCKED` ou `REQUIRED` sem `PASS`. Acrescentar `AI_CONTEXT`, `DECISIONS_LOG`, `PROJECT_STATE`, `NEXT_STEPS` e documentos pertinentes.
 
 Fast Context nunca permite ignorar ou reinterpretar decisão `LOCKED`.
+
+## Aplicar Token Guard
+
+Classificar `TOKEN MODE` antes de usar ferramentas:
+
+- `ECONOMY`: padrão para leitura, documentação, diagnóstico simples e mudança pequena/isolada. Reutilizar contexto, ler apenas trechos pertinentes quando leitura integral não for obrigatória, fazer buscas/comandos estreitos, reduzir outputs e não repetir conteúdo já conhecido.
+- `STANDARD`: implementação normal ou validação que exige contexto específico, múltiplos arquivos relacionados e testes proporcionais.
+- `DEEP`: risco alto, arquitetura nova, `LOCKED`, causa desconhecida, mudança destrutiva, segurança, performance crítica, regressão multissistema, release ou `REVIEW MODE: REQUIRED`.
+
+Ao usar `STANDARD` ou `DEEP`, declarar `TOKEN ESCALATION REASON`. Carregar e usar somente ferramentas pertinentes. Não chamar web, reviewer/agente ou produzir alternativas extras sem necessidade ou regra superior.
+
+Nunca economizar removendo validação necessária, evidência para `PASS`, leitura `LOCKED`, investigação de mudança desconhecida ou proteção contra perda.
 
 ## Classificar tarefa, risco e review
 
@@ -44,6 +56,8 @@ Listar exatamente os arquivos lidos e usar:
 
 ```text
 CONTEXT MODE
+TOKEN MODE
+TOKEN ESCALATION REASON
 HANDOFF STATUS
 FRESHNESS CHECK
 TASK TYPE
@@ -53,6 +67,7 @@ NEXT REVIEW TRIGGER
 PRIMARY SPECIALIST
 OWNER
 FILES READ
+TOOLS USED
 SCOPE
 VALIDATION
 BLOCKERS

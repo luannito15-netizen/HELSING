@@ -71,6 +71,32 @@ Exigir `PASS` antes de continuar quando houver proposta de alterar decisão `LOC
 
 Qualquer review `PARTIAL` ou `BLOCKED` força Full Context. `REQUIRED` sem `PASS` também bloqueia progressão.
 
+## Token Guard
+
+Toda tarefa declara `TOKEN MODE: ECONOMY / STANDARD / DEEP`. Usar `ECONOMY` por padrão e escalar somente quando o ganho de segurança ou qualidade justificar o contexto adicional. Declarar `TOKEN ESCALATION REASON` ao sair de `ECONOMY`.
+
+### ECONOMY
+
+Usar em leitura, documentação, diagnóstico simples e mudança pequena ou isolada:
+
+- preferir Fast Context quando permitido;
+- reutilizar contexto já carregado e não repetir instruções, decisões ou histórico;
+- localizar primeiro arquivos e trechos relevantes; ler integralmente somente quando uma regra, skill ou risco exigir;
+- restringir buscas, comandos e ferramentas ao necessário para responder ou validar;
+- filtrar e resumir outputs extensos, preservando evidência importante;
+- não pesquisar na web, chamar agente/reviewer ou oferecer alternativas extras sem necessidade;
+- entregar apenas `STATUS`, `CHANGED`, `VALIDATED` e `NEXT`, adaptando quando faltar evidência essencial.
+
+### STANDARD
+
+Usar em implementação normal, alteração coordenada de poucos arquivos ou validação com ferramentas/testes. Carregar o contexto específico do sistema, executar verificações proporcionais ao risco e relatar somente decisões, delta, evidência e limitações.
+
+### DEEP
+
+Usar em arquitetura nova, decisão `LOCKED`, bug sem causa conhecida, mudança destrutiva, segurança, performance crítica, regressão multissistema, release ou tarefa classificada como `REVIEW MODE: REQUIRED`. Permitir Full Context, investigação mais ampla e resposta detalhada conforme necessário.
+
+Economia nunca autoriza omitir decisão `LOCKED` pertinente, validação necessária, mudança desconhecida, evidência para `PASS` ou proteção contra perda. Menos leitura, ferramentas ou texto só contam como melhoria quando o resultado continua correto e verificável.
+
 ## Estados, papéis e contrato
 
 - `LOCKED`: só muda com aprovação do Game Director e atualização da fonte oficial.

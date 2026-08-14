@@ -20,6 +20,13 @@ Este repositório é a fonte oficial do HELSING. Responder em português, salvo 
 
 Usar Full Context quando qualquer gatilho de `AGENTS.md` ocorrer. O handoff é contexto operacional curto, não fonte de decisões nem autorização de escrita.
 
+## Token Guard
+
+- Usar `TOKEN MODE: ECONOMY` por padrão: não repetir contexto, ler somente material pertinente, limitar ferramentas e responder com o delta.
+- Usar `STANDARD` para implementação/testes normais e `DEEP` somente para risco alto definido em `AGENTS.md`.
+- Declarar motivo ao escalar além de `ECONOMY`.
+- Economia nunca reduz validação, evidência, proteção `LOCKED` ou inspeção de mudança desconhecida.
+
 ## Revisão por risco
 
 - `NONE`: não revisar; Codex faz self-validation.
