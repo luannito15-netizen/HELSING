@@ -23,6 +23,8 @@ Prioridade atual:
 9. Uma ability aprovada.
 10. Resources apenas quando o playable exigir.
 
+O Production Pack acrescenta um segundo horizonte `WORKING`: loot, run, morte/extração, stash e persistência formam o primeiro gate crítico do produto de extração. A ordem desse gate em relação à conclusão integral de `ALUCARD — PLAYABLE PRE-ALPHA 01` está pendente de reconciliação e não pode ser decidida pelo especialista.
+
 ## Responsabilidades
 
 - Arquitetura e implementação em Unity 6, C#, URP e Input System.
@@ -35,6 +37,7 @@ Prioridade atual:
 - Testes, smoke tests e documentação do runtime criado.
 - Avaliação proporcional de performance mobile desde o início.
 - Preservação das decisões LOCKED e sinalização de conflitos antes de codificar uma suposição permanente.
+- Avaliação de `REVERSAL PATH`, acoplamento e custo de migração para sistemas novos.
 
 ## Fora de escopo
 
@@ -61,7 +64,10 @@ Prioridade atual:
 ### Produto e runtime
 
 - Mobile landscape.
-- Câmera 3/4 elevada, seguindo o Player, com rotação fixa inicialmente e sem câmera orbital nesta fase.
+- Câmera em perspectiva 3/4 elevada, seguindo o Player, com inclinação forte para o chão e rotação diagonal fixa inicialmente.
+- Projeção ortográfica/isométrica pura e over-the-shoulder no gameplay normal não são permitidas.
+- Movimento e targeting permanecem independentes dos valores internos e da implementação concreta do rig.
+- A câmera deve ser configurável e substituível.
 - Primeiro personagem: Nosferatu Alucard.
 - Marco: `ALUCARD — PLAYABLE PRE-ALPHA 01`.
 - Critério macro: mover, mirar, atirar com Casull e Jackal, trocar arma, dash, usar ao menos um poder e matar um inimigo simples na câmera real.
@@ -90,7 +96,7 @@ Prioridade atual:
 - Input desktop temporário é aceitável para desenvolvimento; deve mapear intenções que depois receberão bindings touch.
 - UI de debug pode exibir HP, arma, alvo e cooldown; não representa a UI final.
 - ScriptableObjects só devem ser introduzidos quando reduzirem duplicação ou separarem dados de comportamento de forma concreta.
-- A câmera Blender de 58 mm é referência autorada; 35° e 40–45 mm são hipóteses antigas. A calibração real acontece no Unity.
+- A câmera Blender de 58 mm é referência autorada; 35° e 40–45 mm são hipóteses antigas. Todos os valores do rig permanecem `TUNING / OPEN` e a calibração real acontece no Unity.
 - O Alucard V01 permanece congelado até o Unity demonstrar um problema concreto.
 
 ## Decisões OPEN
@@ -140,6 +146,9 @@ Se os documentos divergirem do estado real do projeto, apresentar evidência e e
 - Tratar warnings relevantes, exceptions e erros do Console antes de declarar PASS.
 - Criar validações proporcionais ao risco: compilação, Play Mode, smoke test e teste em dispositivo quando aplicável.
 - Preferir `transform`/estado simples e performance previsível; não adicionar packages sem justificativa.
+- Separar `PRODUCT VISION`, `GAMEPLAY CONTRACT` e `CURRENT IMPLEMENTATION`; não transformar classes provisórias em regras de produto.
+- Tratar boundary de run/profile/stash/save, schemas persistentes e service maps transversais como `ARCHITECTURAL COMMITMENT` até revisão explícita.
+- Manter settlement terminal e transações econômicas com uma única autoridade; não salvar loot diretamente no stash durante pickup.
 
 ## Critérios de qualidade
 

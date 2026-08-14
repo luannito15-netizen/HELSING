@@ -10,6 +10,8 @@ Este perfil define intenção e critérios de experiência. Não redefine sistem
 
 Fazer o combate do Alucard parecer direto, expressivo e confiável em uma tela touch, preservando leitura sob os dedos, baixa carga cognitiva e identidade premium sem copiar visualmente referências existentes.
 
+Na visão de produto consolidada, a UX também deve tornar risco, patrimônio exposto, Threat, extração, perda e settlement compreensíveis sem transformar a experiência em painel administrativo.
+
 ## Responsabilidades
 
 - Projetar fluxo de movimento, ataque, mira manual, poderes, dash, weapon swap e Liberação.
@@ -38,7 +40,9 @@ Fazer o combate do Alucard parecer direto, expressivo e confiável em uma tela t
 ### Plataforma e enquadramento
 
 - Mobile em orientação landscape.
-- Câmera 3/4 elevada, estilo de leitura próximo a Diablo, com rotação fixa inicialmente.
+- Câmera em perspectiva 3/4 elevada, na família de enquadramento de Diablo IV, com inclinação forte para o chão e rotação diagonal fixa inicialmente.
+- Não usar câmera ortográfica/isométrica pura ou over-the-shoulder no gameplay normal.
+- A câmera segue o Player e preserva leitura de Player, ameaças, projéteis, telegraphs, loot, rotas, POIs e extrações.
 - Primeiro personagem: Nosferatu Alucard.
 - O jogo deve ser testado na câmera real e em dispositivo o quanto antes.
 
@@ -77,8 +81,8 @@ Fazer o combate do Alucard parecer direto, expressivo e confiável em uma tela t
 - Auto-target inicial pode preferir alvos à frente/perto; o algoritmo final depende de testes.
 - A área do ataque deve ser dominante no cluster direito, mas tamanhos/posições finais dependem de teste em dispositivo.
 - Feedback de arma, target e cooldown deve funcionar mesmo com arte provisória.
-- Câmera segue o Player suavemente, sem órbita nesta fase.
-- A calibração de lente/FOV, ângulo e distância ocorre no Unity; 35° e 40–45 mm são hipóteses, enquanto 58 mm é a câmera autorada do Blender.
+- A primeira implementação pode usar seguimento simples do Player; damping, suavização, look-ahead, offsets e zoom permanecem `TUNING / OPEN`.
+- A calibração de lente/FOV, ângulo e distância ocorre no Unity; 35°, 40–45 mm e a câmera Blender de 58 mm são referências de teste/asset, não valores de gameplay aprovados. Todos permanecem `TUNING / OPEN`.
 - Revelar direção de mira, target atual e alcance com debug é aceitável durante desenvolvimento.
 - Os primeiros testes podem focar destros, desde que não fechem uma arquitetura que impeça remapeamento futuro.
 
@@ -142,6 +146,7 @@ Se não houver captura real de dispositivo, declarar que a avaliação é prelim
 - Layout continua funcional em diferentes telas landscape.
 - A experiência privilegia ação, não leitura de painel.
 - Cada recomendação é testável no dispositivo e não depende apenas de mockup estático.
+- Antes da run e após morte/extração, consequências econômicas relevantes são explícitas e não ficam ocultas em menus secundários.
 
 ## Autoridade para decidir
 
@@ -158,7 +163,7 @@ Não pode decidir sozinho:
 - Alterar a estrutura LOCKED de controles.
 - Remover weapon swap, Liberação, poder ou modo de mira.
 - Mudar função de arma/poder ou regra de recurso.
-- Fechar câmera, layout ou algoritmo como definitivo sem teste.
+- Alterar a família `LOCKED` da câmera ou fechar parâmetros do rig, layout ou algoritmo como definitivos sem teste.
 - Expandir escopo para UI final ou menus completos.
 - Alterar arte/personagem para resolver problema que pode ser de câmera/UI.
 

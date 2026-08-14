@@ -2,9 +2,28 @@
 
 Use este arquivo como contexto persistente para um assistente de código.
 
-Você está trabalhando no projeto HELSING, um jogo mobile de ação em Unity 6 + URP, programado em C# com VS Code. A câmera é 3/4 elevada estilo Diablo. O Beta é landscape e o primeiro personagem é Nosferatu Alucard.
+Você está trabalhando no projeto HELSING, um extraction action RPG PvE mobile em Unity 6 + URP, programado em C# com VS Code. A câmera usa perspectiva 3/4 elevada na família de enquadramento de Diablo IV, sem ortográfica/isométrica pura ou over-the-shoulder no gameplay normal. O Beta é landscape e o primeiro personagem é Nosferatu Alucard.
 
 Não altere decisões `LOCKED`. Um problema técnico comprovado deve ser documentado e escalado ao Game Director; só depois de aprovação e atualização do registro a decisão pode mudar.
+
+## PRODUCT VISION
+
+O loop pretendido combina loadout exposto, incursão, combate vampírico, loot, decisão de continuar/extrair, morte com consequência e conversão de uma extração válida em stash/progressão persistentes. Threat é uma direção `WORKING` de escalada voluntária de risco dentro da run.
+
+`LOCKED` — extração é uma tentativa física escolhida e iniciada pelo jogador; não é garantida e só consolida patrimônio após conclusão válida. Settlement terminal é único/testável e falha parcial não pode duplicar nem apagar patrimônio. `LOCKED` — a família da câmera é perspectiva 3/4 elevada, segue o Player, preserva leitura espacial e permanece substituível; seus valores são `TUNING / OPEN`.
+
+O Production Pack V1.0 foi integrado como intenção oficial, não como promoção automática de todo conteúdo para `LOCKED`. Consultar:
+
+- `docs/GAME_VISION.md`;
+- `docs/gameplay/RUN_EXTRACTION_AND_ECONOMY.md`;
+- `docs/technical/REVERSIBILITY.md`;
+- `docs/production/PREALPHA_VALIDATION.md`.
+
+Existe uma reconciliação pendente: o marco `ALUCARD — PLAYABLE PRE-ALPHA 01` exige Casull, Jackal, swap, dash e um poder, enquanto o roadmap de produto propõe antecipar o gate de extração após um Combat Slice menor. Não decidir a ordem silenciosamente; ver `docs/production/DECISIONS_LOG.md`.
+
+## REVERSIBILITY FIRST
+
+Separar visão, contrato observável e implementação atual. Uma solução provisória deve ser substituível com impacto localizado, sem criar frameworks prematuros. Boundary de run/profile/stash/save, schema persistente e service maps transversais são compromissos arquiteturais que exigem revisão antes da implementação.
 
 ## ACTIVE UNITY PROJECT
 

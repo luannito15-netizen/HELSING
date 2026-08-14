@@ -69,7 +69,7 @@ Garantir que o Nosferatu Alucard existente funcione no HELSING com escala, hande
 
 ### Produto
 
-- Mobile landscape, câmera 3/4 elevada e rotação fixa inicialmente.
+- Mobile landscape, câmera em perspectiva 3/4 elevada e rotação diagonal fixa inicialmente.
 - A leitura deve ser julgada prioritariamente na câmera real de gameplay.
 - O marco é `ALUCARD — PLAYABLE PRE-ALPHA 01`; arte final não é pré-requisito.
 
@@ -79,7 +79,7 @@ Garantir que o Nosferatu Alucard existente funcione no HELSING com escala, hande
 - Medições auditadas de aproximadamente 2,19 m até o cabelo e 2,38 m com chapéu são evidências de bounding visual, não autorização para reescalar; a medida anatômica pé → crânio ainda deve ser validada se o Unity revelar problema.
 - O FBX auditado pode não conter corretamente Jackal e Casull, enquanto GLB e source as contêm; isso deve ser confirmado no pacote efetivamente importado antes de qualquer reexport.
 - Unity Humanoid readiness ainda precisa de validação real no Editor.
-- A câmera Blender de 58 mm é referência autorada válida; 40–45 mm era hipótese de teste, não regra.
+- A câmera Blender de 58 mm é referência autorada do asset, não valor de gameplay aprovado; lente/FOV e demais parâmetros do rig permanecem `TUNING / OPEN` no Unity.
 - Animações podem ser importadas juntas inicialmente; separar arquivos só se houver benefício concreto.
 - Bones auxiliares de sobretudo/chapéu não precisam pertencer ao Humanoid mapping.
 - Ajustes de importação e Animator devem preceder alterações de malha ou rig quando puderem resolver o problema.

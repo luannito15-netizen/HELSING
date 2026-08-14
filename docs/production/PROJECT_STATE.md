@@ -2,7 +2,22 @@
 
 ## Status geral
 
-**Fase:** pré-produção jogável — fundação Unity pronta, primeiro loop ainda não implementado.
+**Fase:** pré-produção jogável — visão de produto consolidada, fundação Unity pronta, primeiro loop ainda não implementado.
+
+## Visão de produto consolidada
+
+O Production Pack V1.0 foi auditado como intenção oficial do Game Director. HELSING passa a estar documentado como extraction action RPG PvE mobile: combate vampírico, risco de loadout, decisão de extração, economia/stash persistentes e escalada voluntária por Threat.
+
+Essa visão não promove automaticamente mecânicas ou números para `LOCKED`. Contratos novos permanecem `WORKING`, questões sem decisão ficam `OPEN`, parâmetros são `TUNING / OPEN` e conteúdo posterior é `FUTURE SCOPE`.
+
+Dois contratos transversais estão `LOCKED`: extração física, tentada e consolidada somente após conclusão válida; e câmera em perspectiva 3/4 elevada, na família de enquadramento de Diablo IV, configurável e desacoplada de movimento/targeting. Rotas concretas e valores do rig continuam abertos.
+
+Fontes canônicas principais:
+
+- visão: `docs/GAME_VISION.md`;
+- run/economia: `docs/gameplay/RUN_EXTRACTION_AND_ECONOMY.md`;
+- arquitetura reversível: `docs/technical/REVERSIBILITY.md`;
+- validação: `docs/production/PREALPHA_VALIDATION.md`.
 
 A direção deixou de ser apenas conceitual. O protótipo 3D Pré-Alpha do Alucard está oficialmente incorporado ao repositório como:
 
@@ -27,6 +42,10 @@ Começar o núcleo jogável com placeholder dentro do projeto Unity já iniciali
 - armas;
 - dash;
 - inimigo básico.
+
+Próximo ticket seguro: `CORE-001` — movimento 360° e câmera configurável, validados na matriz mobile landscape sem fechar parâmetros de rig.
+
+O primeiro gate de produto completo acrescenta loot, inventário, morte/extração, stash e persistência. A ordem entre esse gate e a conclusão integral do marco `ALUCARD — PLAYABLE PRE-ALPHA 01` está em `VISION / LOCKED ORDER RECONCILIATION — OPEN`; nenhuma implementação deve resolver essa prioridade silenciosamente.
 
 Especialista principal: **Unity Architect**. Codex é o implementer padrão; Claude Code revisa em modo read-only por padrão.
 
@@ -68,3 +87,16 @@ Entrega funcional esperada:
 - um poder;
 - inimigo simples;
 - morte/dano básico.
+
+## Gate de produto — WORKING
+
+Após reconciliação de prioridade, provar com placeholder:
+
+- loadout exposto;
+- loot e inventário mínimo;
+- decisão de extração;
+- morte sem transferência indevida;
+- stash persistente;
+- reinício preservando somente o estado elegível.
+
+Threat, economia expandida, Cheddar, Anti-Freak, Last Death e conteúdo adicional permanecem posteriores ou pendentes de promoção explícita de escopo.

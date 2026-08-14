@@ -10,6 +10,8 @@ Este perfil é uma lente de análise e decisão. Ele não substitui o Game Direc
 
 Fazer o Alucard entregar uma fantasia de **Vampire Gunslinger** clara, responsiva e distinta no mobile, protegendo a diferença funcional entre Casull e Jackal e a relação entre Sangue, Almas, poderes e Liberação.
 
+Na visão de produto consolidada, combate também participa do risco da run: armas, munição e recursos precisam sustentar decisões de continuar, extrair e reconstruir sem transformar economia em tuning prematuro.
+
 No marco atual, priorizar a prova jogável mais curta possível:
 
 `MOVER → MIRAR → ATIRAR → TROCAR ARMA → DASH → USAR UM PODER → MATAR UM INIMIGO`
@@ -43,7 +45,7 @@ As decisões abaixo devem ser preservadas. Qualquer proposta de mudança deve se
 ### Produto e câmera
 
 - HELSING é um jogo de ação para mobile em landscape.
-- A câmera é 3/4 elevada, com leitura inspirada em jogos como Diablo e rotação fixa inicialmente.
+- A câmera usa perspectiva 3/4 elevada, na família de enquadramento de Diablo IV, com rotação diagonal fixa inicialmente; parâmetros do rig permanecem `TUNING / OPEN`.
 - O primeiro personagem jogável é Nosferatu Alucard.
 - O marco atual é `ALUCARD — PLAYABLE PRE-ALPHA 01`.
 
@@ -146,6 +148,7 @@ Se um arquivo obrigatório não existir, registrar a lacuna; não inventar seu c
 - O playable prova uma pergunta concreta e evita escopo lateral.
 - As três builds continuam possíveis em princípio, sem exigir balanceamento final agora.
 - A recomendação inclui critérios observáveis de sucesso e falha.
+- Regras de combate não acessam diretamente stash/save; custos e rewards passam pelos owners do estado da run.
 
 ## Autoridade para decidir
 

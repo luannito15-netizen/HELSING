@@ -122,7 +122,7 @@ VALIDATION:
 ## Regras permanentes
 
 - Projeto Unity oficial: `unity/`; `unity-bootstrap/` é `LEGACY / DO NOT USE`.
-- Beta mobile landscape; câmera 3/4 elevada com rotação fixa inicialmente.
+- Beta mobile landscape; câmera em perspectiva 3/4 elevada, na família de enquadramento de Diablo IV, com rotação diagonal fixa inicialmente. Projeção ortográfica/isométrica pura e over-the-shoulder no gameplay normal são proibidas; valores do rig permanecem `TUNING / OPEN`.
 - Nosferatu Alucard é o primeiro personagem; `ALUCARD_PREALPHA_V01` está congelado até problema concreto no Unity e autorização.
 - Jackal na mão direita; Casull na esquerda.
 - Existência do Dash: `LOCKED`. Distância, duração, cooldown, direção precisa e invulnerabilidade: `OPEN` ou `TUNING / OPEN`.
@@ -130,6 +130,20 @@ VALIDATION:
 - Preservar alterações preexistentes; não tocar itens fora do `SCOPE`.
 - Não criar commit ou push sem autorização explícita.
 - Um ajuste documental não autoriza Unity, Blender ou gameplay.
+
+## Reversibility First
+
+Visão de produto define o resultado que o jogo precisa entregar; a implementação atual é uma solução substituível. Para sistemas novos ou de alto impacto, distinguir:
+
+- `PRODUCT VISION` — experiência ou resultado pretendido;
+- `GAMEPLAY CONTRACT` — comportamento observável;
+- `CURRENT IMPLEMENTATION` — solução existente, sem promovê-la a regra de produto;
+- `DECISION STATE` — `LOCKED`, `WORKING`, `OPEN` ou `TUNING / OPEN`;
+- `REVERSAL PATH`, risco de acoplamento e custo de migração.
+
+Reversibilidade significa substituição localizada e previsível, não antecipar frameworks. Preferir responsabilidades pequenas, dependências explícitas, contratos estáveis e configuração separada quando isso trouxer benefício concreto. Evitar regras escondidas em cenas/prefabs, dependências circulares, valores importantes espalhados e uma classe central responsável por tudo.
+
+Uma escolha com alto acoplamento ou migração difícil deve ser marcada `ARCHITECTURAL COMMITMENT — GAME DIRECTOR / UNITY ARCHITECT REVIEW REQUIRED` e não pode ser oficializada silenciosamente.
 
 ## Atualização do handoff
 

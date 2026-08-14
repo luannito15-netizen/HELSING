@@ -118,7 +118,7 @@ REVIEWER: CLAUDE CODE
 WRITE SCOPE: Player movement e câmera na Prototype_Arena_01
 READ SCOPE: projeto unity/, decisões e documentação técnica relacionada
 OUT OF SCOPE: Alucard, armas, poderes e UI final
-DECISION STATE: câmera 3/4 fixa = LOCKED; valores de FOV/distância = WORKING
+DECISION STATE: câmera em perspectiva 3/4 elevada e rotação inicial fixa = LOCKED; FOV/distância e demais valores = TUNING / OPEN
 VALIDATION: mover e acompanhar sem erros críticos no Console
 ```
 

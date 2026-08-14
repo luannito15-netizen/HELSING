@@ -1,17 +1,18 @@
 # HELSING
 
-Pacote de continuidade do projeto do jogo mobile inspirado em **Hellsing**, organizado para ser aberto no VS Code e permitir retomar o desenvolvimento sem depender do histórico da conversa.
+Pacote de continuidade do HELSING, um extraction action RPG PvE mobile inspirado em **Hellsing**, organizado para ser aberto no VS Code e permitir retomar o desenvolvimento sem depender do histórico da conversa.
 
 ## Estado atual
 
 - Primeiro personagem jogável definido: **Nosferatu Alucard**.
 - O protótipo 3D oficial **ALUCARD_PREALPHA_V01** está incorporado ao repositório com modelo mid-poly, rig, skinning, materiais e animações.
-- Direção de câmera: **3/4 elevada, estilo Diablo**.
+- Direção de câmera: **perspectiva 3/4 elevada**, na família de enquadramento de Diablo IV, sem câmera ortográfica/isométrica pura.
 - Plataforma-alvo do Beta: **mobile landscape**.
 - Motor: **Unity 6 (6000.5.8f1) + URP 17.5.0**, projeto real já inicializado em `unity/`.
 - IDE de programação: **VS Code**.
 - Blender permanece responsável por modelagem, rig e animações.
 - O primeiro grande marco de gameplay é um **Playable Pre-Alpha** com movimentação, mira, disparo, troca de arma, dash, um poder e um inimigo básico.
+- O primeiro gate crítico do produto de extração deve provar loadout exposto, loot, morte/extração, stash e persistência; sua ordem em relação ao marco jogável ainda exige reconciliação do Game Director.
 
 ## Comece por aqui
 
@@ -21,6 +22,13 @@ Pacote de continuidade do projeto do jogo mobile inspirado em **Hellsing**, orga
 4. Carregue o perfil especialista adequado à tarefa.
 5. Para trabalho técnico no Unity, consulte `docs/technical/UNITY_VSCODE_PIPELINE.md` e `docs/technical/UNITY_MCP.md`.
 6. Consulte a documentação específica de personagem ou gameplay somente conforme o escopo.
+
+Visão e arquitetura consolidadas:
+
+- `docs/GAME_VISION.md`;
+- `docs/gameplay/RUN_EXTRACTION_AND_ECONOMY.md`;
+- `docs/technical/REVERSIBILITY.md`;
+- `docs/production/PREALPHA_VALIDATION.md`.
 
 ## Importante
 

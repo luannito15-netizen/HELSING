@@ -2,21 +2,36 @@
 
 ## Visão
 
-Ação em tempo real com câmera 3/4 elevada.
+Ação em tempo real com câmera 3/4 elevada dentro de incursões PvE de extração. O jogador controla Alucard diretamente em ambientes com leitura rápida de ameaça, movimentação responsiva, armas de fogo, poderes vampíricos e risco econômico legível.
 
-O jogador controla Alucard diretamente em arenas/ambientes com leitura rápida de ameaça, movimentação responsiva, armas de fogo e poderes vampíricos.
+## Câmera de gameplay — `LOCKED`
 
-## Loop moment-to-moment
+A câmera principal usa perspectiva 3/4 elevada, inclinação forte para o chão, profundidade visual perceptível e rotação diagonal fixa inicialmente. Ela segue o Player e preserva a leitura de inimigos, projéteis, telegraphs, loot, rotas, POIs e pontos de extração. Não usar projeção ortográfica/isométrica pura nem over-the-shoulder no gameplay normal.
 
-1. Posicionar-se.
+Movimento e targeting consomem intenções e dados de mundo, não valores internos nem a implementação concreta do rig. Altura, distância, pitch, yaw, FOV, damping, offsets, zoom, obstáculos e adaptação por tela permanecem `TUNING / OPEN`.
+
+## Micro loop
+
+1. Localizar ameaça e posicionar-se.
 2. Selecionar alvo ou mirar manualmente.
 3. Atacar com a arma atual.
-4. Trocar arma conforme o tipo de ameaça.
+4. Trocar arma conforme a ameaça.
 5. Usar dash para reposicionamento.
-6. Gastar Sangue em regeneração/poderes.
-7. Usar poderes ativos.
-8. Administrar Almas.
-9. Acionar Liberação em momentos de maior pressão/poder.
+6. Gastar Sangue em regeneração ou poderes.
+7. Administrar poderes, Almas e Liberação.
+8. Coletar Blood/loot e decidir consumir, guardar ou avançar.
+
+## Run loop — `WORKING`
+
+`PREPARAR → ENTRAR → COMBATER/FARMAR → CONTROLAR OU ELEVAR THREAT → OBTER OBJETIVO/LOOT → CONTINUAR OU EXTRAIR → CONVERTER`
+
+Extração é decisão do jogador, não encerramento automático por timer. Contratos dão intenção antes da run; eventos e loot criam tentações durante a run.
+
+## Meta loop — `WORKING`
+
+`EXTRAIR RECURSOS → MELHORAR BASE/ARSENAL → LIBERAR BLUEPRINT/SKILL → ASSUMIR MAIS RISCO → AMPLIAR BUILDS`
+
+As regras de propriedade, morte, stash e persistência estão em [Run, Extraction and Economy](RUN_EXTRACTION_AND_ECONOMY.md).
 
 ## Princípio central do combate
 
