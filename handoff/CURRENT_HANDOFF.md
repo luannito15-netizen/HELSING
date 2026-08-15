@@ -4,12 +4,12 @@
 
 HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. `COMMIT: NOT RUN`
 HANDOFF REVISION: DERIVE FROM GIT HISTORY
-WORKTREE AT HANDOFF: DIRTY — mudanças autorizadas de `CORE-001`/`CORE-002`, as correções de ciclo de vida de input desta etapa e a alteração preexistente e fora de escopo em `unity/ProjectSettings/PackageManagerSettings.asset`
+WORKTREE AT HANDOFF: LIMPO exceto `unity/ProjectSettings/PackageManagerSettings.asset`, preexistente e fora de escopo. Todo o trabalho acumulado até 2026-08-15 foi commitado em `ced3ebf`, na branch `feat/mobile-controls-real-device`, com autorização explícita do Game Director. `MERGE PARA MAIN: NOT RUN`. `PUSH: NOT RUN` — o commit existe apenas localmente
 IMPLEMENTER: CLAUDE CODE nesta etapa, sob `OWNER: CLAUDE CODE` explícito do Game Director; Codex indisponível e sem writer concorrente. O padrão volta a ser `IMPLEMENTER: CODEX` quando ele retornar.
 REVIEW MODE: CHECKPOINT
-LAST REVIEW STATUS: PARTIAL — revisão read-only do Claude Code retornou dois `P1` e um `P2`, todos corrigidos; as correções já foram executadas e validadas no Editor, mas ainda não foram revisadas por terceiro
+LAST REVIEW STATUS: `NOT RUN` para o escopo de 2026-08-15 — `ShotTracerView`, `DummyRespawner`, `HitscanWeapon.Fired`, joystick dinâmico, `Boundaries` e a troca para `IL2CPP / ARM64` foram escritos pelo Claude Code e **não foram revisados por terceiro**. O `PARTIAL` anterior, dos dois `P1` de ciclo de vida de input, também segue sem auditoria independente pelo mesmo motivo: o autor não deve revisar a própria mudança
 REVIEW SCOPE: input unificado, UI greybox, multi-pointer, safe area, movimento, aim/facing, câmera, reversibilidade e validação do P0
-NEXT REVIEW TRIGGER: validação de movimento e mira em runtime com o Editor em foco, correção do defeito do harness e teste em device real; depois o checkpoint do P0 Foundation
+NEXT REVIEW TRIGGER: **DISPARADO** — os três gatilhos registrados (movimento e mira em runtime, teste em device real e fechamento do `P0`) ocorreram em 2026-08-15. O checkpoint do `P0 — Foundation` está **devido agora** e deve preceder qualquer expansão para `P1`/`P2`. Revisor: Codex ou outro agente que não seja o autor. Único gatilho anterior ainda não atendido: o `HARNESS DEFECT — P2 ABERTO`
 LAST UPDATED: 2026-08-15
 NEXT REQUIRED READS: `docs/production/DECISIONS_LOG.md`, `docs/production/NEXT_STEPS.md`, `docs/technical/ARCHITECTURE_V01.md`, `docs/technical/REVERSIBILITY.md` e `docs/production/PREALPHA_VALIDATION.md`
 
