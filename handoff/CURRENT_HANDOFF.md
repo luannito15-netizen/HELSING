@@ -360,14 +360,32 @@ O `5.4.2` nunca chegou a ser commitado: o diff sai direto de `4.15.1` para a aus
 
 `REVIEW: NOT RUN`.
 
+### `VARREDURA DE PENDÊNCIAS` — fecha os itens em aberto do P0 (2026-08-15)
+
+`OWNER: CLAUDE CODE` por instrução do Game Director para resolver tudo de uma vez, em vez de trazer decisão item a item. Executado com o Unity aberto, pela API, sem edição de YAML à mão.
+
+**`HARNESS DEFECT — P2`, corrigido.** A correção estava proposta e parada desde 2026-08-14. Aplicada agora em `MultiTouchHandlerHarness.cs`: validação de menu que desabilita o item fora do Play Mode, mais uma recusa explícita em `Run()`. O comentário no código explica por quê — fora do Play Mode o Unity não chama `Awake()`, os `RectTransform` ficam `null`, os controles nunca ativam, e então os `FAIL` são artefato e os `PASS` são vazios. Recusar é o único resultado honesto.
+
+**`PROJECT-WIDE ACTIONS`, resolvido.** Repontadas para `HelsingGameplay` via `InputSystem.actions` e template removido. Confirmado no arquivo: `com.unity.input.settings.actions` passou do guid `052faaac…` para `2e362f74…`. O projeto passa a ter um único `.inputactions`.
+
+**`VISION / LOCKED ORDER RECONCILIATION`, decidido.** Dois gates formais, `GATE A` antes de `GATE B`, sem remover nada do marco. Registrado em `DECISIONS_LOG.md` como `WORKING` — decisão de produto tomada por delegação explícita, e reversível com uma edição naquele registro caso o Game Director prefira outra ordem.
+
+**`REFERÊNCIA DE CONTROLE`, registrada.** A família MOBA mobile ganhou entrada formal em `DECISIONS_LOG.md`, como o `NEXT_STEPS.md` vinha pedindo, para não virar contrato por acúmulo de implementação.
+
+**`NEXT_STEPS.md` reconciliado com a realidade.** Dash estava listado como não implementado; joystick e mira manual constavam como `DEVICE TEST PENDENTE`; `CORE-002` constava `PASS — REAL DEVICE PENDENTE`. Todos corrigidos. O pedido de sensibilidade da mira (~6–7%) ficou registrado como `TUNING / OPEN` e candidato a slider — **não implementado**, porque exigiria uma tela de configurações que não existe e isso seria inventar escopo.
+
+`COMPILE: PASS` — console do Editor com zero erros após a correção do harness e a remoção do template. `DEVICE: NOT RUN` para esta varredura especificamente: nenhum build novo foi feito depois dela.
+
+`REVIEW: NOT RUN`.
+
 ## Known issues
 
 - `CORE-002` **fechado por completo**. O `REAL DEVICE` que era o último pendente recebeu `PASS` em 2026-08-15, incluindo o touch com dois dedos simultâneos que nem o harness nem o mouse na Game View reproduzem. Esta entrada ficou desatualizada por duas rodadas e é mantida aqui apenas como histórico.
-- `HARNESS DEFECT — P2 ABERTO, não corrigido nesta etapa`: o menu item `HELSING/Validation/Run Multi-Touch Handler Harness` também roda em Edit Mode, onde produz resultado enganoso. Fora do Play Mode o Unity não executa `Awake()` em `MonoBehaviour` comum, então `VirtualJoystickControl.controlRect` e `ManualAimDragControl.interactionRect` ficam `null`, `UpdatePointer`/`TryGetLocalPoint` retornam cedo e os controles nunca ativam. A execução em Edit Mode retornou `RESULT: FAIL` com quatro `Assertion failed on expression: 'ShouldRunBehaviour()'` — o `SendMessage` de `OnApplicationFocus` não é entregue — e deixou um erro transitório `The referenced script (Unknown) on this Behaviour is missing!` no domain reload seguinte. Esse erro não se reproduz em ciclos de Play Mode, com ou sem harness, e não há componente ausente em memória. Naquela execução os quatro `FAIL` eram artefato do contexto e os cinco `PASS` eram vazios, pois só afirmavam flags já `false`. Correção proposta e **não aplicada**: guardar o menu item com `EditorApplication.isPlaying`, ou resolver os `RectTransform` sob demanda, para que o harness nunca reporte resultado sem significado.
+- `HARNESS DEFECT — P2 RESOLVIDO` em 2026-08-15, com exatamente a correção que estava proposta e nunca aplicada: uma função de validação `[MenuItem(..., true)]` desabilita o item fora do Play Mode, e `Run()` recusa a execução com `RESULT: NOT RUN — requires Play Mode` caso seja alcançado por outro caminho. O harness não pode mais produzir resultado sem significado. Descrição original do defeito, mantida como histórico: o menu item `HELSING/Validation/Run Multi-Touch Handler Harness` também roda em Edit Mode, onde produz resultado enganoso. Fora do Play Mode o Unity não executa `Awake()` em `MonoBehaviour` comum, então `VirtualJoystickControl.controlRect` e `ManualAimDragControl.interactionRect` ficam `null`, `UpdatePointer`/`TryGetLocalPoint` retornam cedo e os controles nunca ativam. A execução em Edit Mode retornou `RESULT: FAIL` com quatro `Assertion failed on expression: 'ShouldRunBehaviour()'` — o `SendMessage` de `OnApplicationFocus` não é entregue — e deixou um erro transitório `The referenced script (Unknown) on this Behaviour is missing!` no domain reload seguinte. Esse erro não se reproduz em ciclos de Play Mode, com ou sem harness, e não há componente ausente em memória. Naquela execução os quatro `FAIL` eram artefato do contexto e os cinco `PASS` eram vazios, pois só afirmavam flags já `false`. Correção proposta e **não aplicada**: guardar o menu item com `EditorApplication.isPlaying`, ou resolver os `RectTransform` sob demanda, para que o harness nunca reporte resultado sem significado.
 - `REAL DEVICE` **RESOLVIDO** em 2026-08-15. Permanece válida a limitação que o motivou: a Game View com mouse fornece um único pointer e não cobre dois pointers concorrentes, então qualquer mudança futura em input volta a exigir aparelho real.
 - O player loop não avança com o Editor sem foco (`runInBackground=False`), o que impede validar movimento e mira por automação. Requer um humano com a janela do Editor em foco.
 - `P3` **RESOLVIDO** nesta etapa; a descrição anterior estava incorreta quanto à causa. Ver a seção de landscape e fonte única acima.
-- `PROJECT-WIDE ACTIONS — OPEN`: `Assets/InputSystem_Actions.inputactions` continua definido como Project-wide Actions do Unity 6 e não é lido pelo runtime do HELSING. Mantê-lo, removê-lo ou substituí-lo por `HelsingGameplay` é decisão de configuração de projeto e não foi tocado.
+- `PROJECT-WIDE ACTIONS — RESOLVIDO` em 2026-08-15. As Project-wide Actions foram repontadas do template do Unity 6 para `HelsingGameplay` pela API do Input System (`InputSystem.actions`), sem edição de YAML à mão, e o template `Assets/InputSystem_Actions.inputactions` foi removido. Verificado antes da remoção que nenhuma cena, prefab, asset ou `ProjectSettings` o referenciava; verificado depois que `EditorBuildSettings.asset` passou a apontar para o guid do `HelsingGameplay`. Morre a terceira fonte de input não documentada que originou o `P3`: o projeto passa a ter um único asset de ações.
 - `unity/ProjectSettings/PackageManagerSettings.asset` **RESOLVIDO**: revertido na etapa de remoção dos pacotes. O diff arrastado por várias sessões era `oneTimePackageErrorsPopUpShown` e dois IDs internos de entidade. Se reaparecer, é ruído de UI do Package Manager, não mudança de projeto.
 - O Unity MCP produziu warnings externos de WebSocket e `GameObjectSerializer`; nenhum erro de gameplay foi encontrado.
 
@@ -379,9 +397,9 @@ O `5.4.2` nunca chegou a ser commitado: o diff sai direto de `4.15.1` para a aus
 
 **`DEVICE` está fechado por completo**, técnico e jogado. O build rodou no POCO X7 Pro, o APK instalou, lançou pela activity padrão, rodou com `logcat` limpo e recebeu aprovação integral do Game Director em `Builds/HELSING_clean_arm64.apk`. As três hipóteses que estavam registradas como expectativa foram medidas e confirmadas. Não há pendência de verificação em aberto para as remoções.
 
-**A ação mais urgente passa a ser o checkpoint do `P0`**, que segue `NOT RUN` e agora acumula também os três commits de remoção. O revisor não pode ser o autor: todo o escopo de 2026-08-15, remoções inclusive, foi escrito pelo Claude Code. Esse é o único gate que continua bloqueando formalmente a abertura da próxima frente.
+**O trabalho seguinte é `GATE A — ALUCARD PLAYABLE PRE-ALPHA 01`**, que está a três itens de fechar: **Jackal, weapon swap e um poder**. A ordem dos gates deixou de ser pergunta — está decidida e registrada em `DECISIONS_LOG.md` como `WORKING`.
 
-Em paralelo, a decisão de escopo continua `OPEN`: o `VISION / LOCKED ORDER RECONCILIATION` em `NEXT_STEPS.md` não foi resolvido. O Production Pack propõe seguir para `P2 — Extraction Loop`, enquanto o marco `ALUCARD — PLAYABLE PRE-ALPHA 01` ainda exige Jackal, weapon swap e um poder. É decisão do Game Director se são dois gates formais ou um marco indivisível.
+**A única pendência de processo é o checkpoint do `P0`**, que segue `REVIEW: NOT RUN` e acumula todo o escopo de 2026-08-15. O revisor não pode ser o autor: tudo isso foi escrito pelo Claude Code. Não bloqueia a implementação do `GATE A`, mas deve preceder a abertura do `GATE B`, onde entram persistência e integridade econômica.
 
 Fica registrado, para não se repetir: a sessão do agente chegou a ser aberta em `C:\Game Helsing`, sobra da pasta anterior, onde restaram apenas `Library/` e `Temp/` sem `Assets`, `Packages` nem `ProjectSettings`. A pendência nº 3 do move — reabrir a sessão já em `C:\HELSING` — não tinha sido cumprida.
 

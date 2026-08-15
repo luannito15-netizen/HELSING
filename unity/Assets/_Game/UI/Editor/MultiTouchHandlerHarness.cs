@@ -24,9 +24,28 @@ namespace Helsing.UI.EditorTools
         private const int LeftPointerId = 0;
         private const int RightPointerId = 1;
 
+        // Greys the menu item out outside Play Mode, so the defect below cannot be reached
+        // by accident from the menu.
+        [MenuItem("HELSING/Validation/Run Multi-Touch Handler Harness", true)]
+        private static bool ValidateRun() => EditorApplication.isPlaying;
+
         [MenuItem("HELSING/Validation/Run Multi-Touch Handler Harness")]
         public static void Run()
         {
+            // Outside Play Mode Unity does not call Awake() on plain MonoBehaviours, so
+            // controlRect/interactionRect stay null, UpdatePointer and TryGetLocalPoint return
+            // early and the controls never activate. Every check would then be meaningless:
+            // the failures are artefacts of the context and the passes only assert flags that
+            // were already false. Refusing to run is the only honest outcome.
+            if (!EditorApplication.isPlaying)
+            {
+                Debug.LogError(
+                    "MULTITOUCH HANDLER HARNESS\n" +
+                    "RESULT: NOT RUN — requires Play Mode.\n" +
+                    "Outside Play Mode the controls never activate, so the result would be meaningless.");
+                return;
+            }
+
             var results = new List<string>();
             GameObject root = null;
 

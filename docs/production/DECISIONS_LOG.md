@@ -126,7 +126,9 @@ Continuam `WORKING`, `OPEN` ou `TUNING / OPEN`: nomes das extrações; item nece
 
 ## VISION / LOCKED RECONCILIATION
 
-### Ordem do marco jogável versus gate de extração — OPEN
+### Ordem do marco jogável versus gate de extração — RESOLVED (2026-08-15)
+
+**Resolvido** em `WORKING` na seção acima: dois gates formais, `GATE A — ALUCARD PLAYABLE PRE-ALPHA 01` antes de `GATE B — PRODUCT EXTRACTION GATE`, sem remover nenhum item do marco. O registro original do conflito fica abaixo como histórico.
 
 - **Intenção do Production Pack:** validar primeiro um combat slice com Casull/Ghoul e tornar o circuito de loot → morte/extração → stash → persistência o primeiro gate crítico do produto; Jackal e powers completos aparecem depois no roadmap proposto.
 - **Decisão atualmente registrada nos perfis/contexto:** `ALUCARD — PLAYABLE PRE-ALPHA 01` exige Casull, Jackal, weapon swap, dash, um poder e inimigo simples.
@@ -142,9 +144,32 @@ Continuam `WORKING`, `OPEN` ou `TUNING / OPEN`: nomes das extrações; item nece
 - **Fora desta reconciliação:** consequência detalhada de morte, Cheddar, Threat, Last Death e Anti-Freak permanecem sem promoção automática.
 - **Ainda `OPEN`:** a ordem entre o marco jogável atual e o gate P2 — Extraction Loop.
 
-## OPEN
+## WORKING — sancionado, reversível
 
-- Cadência final da Casull.
+Decisões desta seção são ponto de partida sancionado, não contrato. Podem mudar sem cerimônia enquanto não forem promovidas a `LOCKED`.
+
+### Referência de controle e câmera — WORKING (2026-08-15)
+
+O Game Director definiu a família **MOBA mobile** — Mobile Legends, LoL Wild Rift — como referência de controle e câmera, com ressalvas a tratar durante o beta.
+
+Consequência já implementada: o facing segue o movimento enquanto não há mira manual. Isso é compatível com o `LOCKED` de movimento e mira, que restringe a independência a "durante mira válida", e está atrás de `faceMovementWhenNotAiming`, reversível pelo Inspector.
+
+A referência vale para **sensação de controle e enquadramento**, não autoriza copiar assets, HUD, identidade visual, level design ou qualquer conteúdo protegido — mesma restrição já aplicada à referência de câmera de Diablo IV.
+
+Registrado aqui para não virar contrato por acúmulo de implementação, conforme `NEXT_STEPS.md` pedia.
+
+### Sequência e nome dos gates — WORKING (2026-08-15)
+
+Resolve o `VISION / LOCKED ORDER RECONCILIATION`, que estava `OPEN` e bloqueava o fechamento do roadmap da Sprint 01. Adotada a opção (b) da própria recomendação registrada: **dividir formalmente em dois gates, sem remover nada do marco.**
+
+1. **`GATE A — ALUCARD PLAYABLE PRE-ALPHA 01`** — fecha o marco existente na íntegra. Já entregues e validados em aparelho: movimento, mira, câmera, Casull, auto-target, dash, dummy com ataque, vida/dano/morte e respawn. Faltam **Jackal, weapon swap e um poder**.
+2. **`GATE B — PRODUCT EXTRACTION GATE`** — o `P2 — Extraction Loop`, com run state, settlement, stash e persistência.
+
+Ordem oficial: **A antes de B.**
+
+Justificativa: o marco `ALUCARD — PLAYABLE PRE-ALPHA 01` está a três itens de fechar e o `NEXT_STEPS.md` proíbe remover ou adiar seus itens silenciosamente; concluí-lo primeiro respeita isso. Dar à extração um gate próprio e nomeado atende à exigência do Production Pack de que persistência econômica não fique escondida atrás de conteúdo — ela deixa de ser um item difuso dentro do marco e passa a ser um gate de produto com critério próprio.
+
+`WORKING`: inverter a ordem ou fundir os gates continua possível, e exige apenas atualizar este registro.
 - Cadência final da Jackal.
 - Valores de dano.
 - Recarga vs munição infinita/cooldown.
@@ -155,7 +180,6 @@ Continuam `WORKING`, `OPEN` ou `TUNING / OPEN`: nomes das extrações; item nece
 - Estilo visual final do cenário.
 - Número de inimigos do Beta.
 - Meta de FPS e aparelhos mínimos.
-- Sequência entre o marco `ALUCARD — PLAYABLE PRE-ALPHA 01` e o gate de extração.
 - Estado formal da consequência de morte e de Last Death; o contrato `LOCKED` de extração não resolve esses itens.
 - Inclusão e ordem de produção da Anti-Freak Combat Pistol.
 - Thresholds, nomes e efeitos finais de Threat.
