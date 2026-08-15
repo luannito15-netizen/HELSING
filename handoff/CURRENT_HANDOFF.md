@@ -289,6 +289,16 @@ Detectado ao fim da sessão, **não introduzido pelo agente** e não autorizado 
 
 Nenhuma dessas mudanças foi revertida — reverter é decisão de dependência e exige o Editor livre e autorização. **Recomendação:** remover o pacote, salvo se o Game Director quiser usá-lo; um assistente de IA no caminho crítico do APK é risco desnecessário para o build de produção. Qualquer script de lançamento automatizado precisa usar a activity nova enquanto o pacote existir.
 
+### `DEVICE: PASS` total do Combat Slice (2026-08-15, fecho da sessão)
+
+Build final instalado e aprovado pelo Game Director no POCO X7 Pro. **Todos os itens pendentes fechados:**
+
+- Correção do tint preso no respawn: `PASS` — o Player volta cinza, com vida cheia.
+- Esquiva do wind-up do Ghoul: `PASS` — sair de perto durante os `0,35 s` evita o dano, confirmando que a reconferência de distância no impacto funciona e que o combate tem espaço para reação.
+- Joystick, dash por arrasto, morte e respawn: `PASS`.
+
+`REGRESSÃO CONHECIDA, NÃO NOSSA`: o build emite **15 exceções** `ArgumentException: 'InputUpdateType.None' is not a valid update mask`, vindas de `InputSystem.EnhancedTouch.Finger` dentro dos callbacks de `InputSystem.onDeviceChange`. Nenhum código do HELSING usa `EnhancedTouch`; a origem é o Unity App UI, dependência do `com.unity.ai.assistant`. **O input não foi afetado** — o Game Director confirmou joystick, mira, ataque e dash funcionando. O impacto é poluição de log e custo desconhecido em runtime, o que atrapalha usar o Console como sinal limpo em testes futuros. Reforça a recomendação de remover o pacote.
+
 ## Known issues
 
 - `CORE-002` fechado no Editor. O único item pendente é `REAL DEVICE: NOT RUN` — teste touch em aparelho real, com dois dedos simultâneos, que nem o harness nem o mouse na Game View reproduzem. Continua obrigatório antes do beta mobile.
