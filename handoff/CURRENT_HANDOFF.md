@@ -2,7 +2,7 @@
 
 ## Handoff metadata
 
-HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. Os pacotes de IA não autorizados foram removidos em 2026-08-15, com autorização explícita do Game Director. `COMMIT: PASS`
+HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. Os pacotes de IA não autorizados foram removidos em 2026-08-15, junto com o `com.unity.purchasing`, depreciado e sem nenhum uso no projeto — ambos com autorização explícita do Game Director e com `COMPILE: PASS` no Editor. `COMMIT: PASS`
 HANDOFF REVISION: DERIVE FROM GIT HISTORY
 WORKTREE AT HANDOFF: LIMPO. Todo o trabalho até a remoção dos pacotes está commitado em `main`. O histórico anterior a esta etapa já está em `origin/main` — `bd9eb0e` é o último commit comum entre local e remoto, e a branch `feat/mobile-controls-real-device` foi integrada. `PUSH: NOT RUN` para o commit desta etapa, que existe apenas localmente. O ruído crônico de `unity/ProjectSettings/PackageManagerSettings.asset` foi resolvido e não deve mais aparecer como pendência
 IMPLEMENTER: CLAUDE CODE nesta etapa, sob `OWNER: CLAUDE CODE` explícito do Game Director; Codex indisponível e sem writer concorrente. O padrão volta a ser `IMPLEMENTER: CODEX` quando ele retornar.
@@ -304,7 +304,7 @@ Build final instalado e aprovado pelo Game Director no POCO X7 Pro. **Todos os i
 
 `REGRESSÃO CONHECIDA, NÃO NOSSA`: o build emite **15 exceções** `ArgumentException: 'InputUpdateType.None' is not a valid update mask`, vindas de `InputSystem.EnhancedTouch.Finger` dentro dos callbacks de `InputSystem.onDeviceChange`. Nenhum código do HELSING usa `EnhancedTouch`; a origem é o Unity App UI, que entra como dependência do `com.unity.ai.inference` — e **não** do `assistant`, como registrado antes. **O input não foi afetado** — o Game Director confirmou joystick, mira, ataque e dash funcionando. O impacto é poluição de log e custo desconhecido em runtime, o que atrapalha usar o Console como sinal limpo em testes futuros. Os três pacotes foram removidos na etapa seguinte; o desaparecimento das exceções é esperado mas **ainda não medido**.
 
-### `PACOTES DE IA REMOVIDOS` — `COMMIT: PASS`, `COMPILE: NOT RUN`, `DEVICE: NOT RUN` (2026-08-15)
+### `PACOTES DE IA REMOVIDOS` — `COMMIT: PASS`, `COMPILE: PASS`, `DEVICE: NOT RUN` (2026-08-15)
 
 `OWNER: CLAUDE CODE` com autorização explícita do Game Director, que para este escopo supera o `Do not touch` de packages e de `PackageManagerSettings.asset`. Executado com o Unity **fechado**: o Editor mantém `ProjectSettings.asset` e `EditorBuildSettings.asset` em memória e sobrescreveria as edições ao salvar.
 
@@ -320,11 +320,31 @@ Verificação executada com o Editor fechado:
 - `manifest.json` e `packages-lock.json` parseiam como JSON válido.
 - Configuração de build preservada: `applicationIdentifier Android = com.helsing.game`, `productName = HELSING`, backend `IL2CPP`, `AndroidTargetArchitectures = 2` (ARM64), `minSdk 26`, landscape exclusivo, cena `[0] Prototype_Arena_01` habilitada e `SampleScene` desabilitada.
 
-`COMPILE: NOT RUN` e `DEVICE: NOT RUN` — a re-resolução dos pacotes e a limpeza do `PackageCache` só ocorrem quando o Editor reabrir, e nada foi compilado nem instalado após a remoção. O ganho esperado, **não medido**, é o build voltar de ~570 s para ~200 s e as 15 exceções de `EnhancedTouch` desaparecerem. É normal o Unity reescrever parte de `packages-lock.json` ao reabrir.
+`COMPILE: PASS` — o Editor foi reaberto em `C:\HELSING\unity` e re-resolveu os pacotes com **zero `error CS` e zero `warning CS`**. As edições sobreviveram intactas à reabertura: `scriptingDefineSymbols` continua `{}`, `m_configObjects` continua sem o App UI, `Assets/Plugins/` não foi recriada e o manifest tem apenas `com.unity.ai.navigation`. Os dois `error:` no log são handshake de licença no boot, resolvidos em seguida pelo próprio cliente.
+
+`DEVICE: NOT RUN` — nada foi instalado em aparelho após a remoção. O ganho esperado, **não medido**, é o build voltar de ~570 s para ~200 s e as 15 exceções de `EnhancedTouch` desaparecerem. Só um build no POCO fecha isso.
 
 **Ruído de fim de linha eliminado.** Cinco dos seis arquivos que apareciam modificados nunca tinham mudado: com `core.autocrlf=true` e o Unity gravando LF, o git relatava diferença inexistente. Comprovado por hash — índice e worktree com o mesmo blob. O `.gitattributes` passou a declarar `text eol=lf` para os assets de texto do Unity. `PackageManagerSettings.asset` foi revertido: o diff era `oneTimePackageErrorsPopUpShown` e dois IDs internos de entidade, sem significado de projeto.
 
 `REVIEW: NOT RUN` — escrita pelo mesmo agente, entra na fila do checkpoint do `P0` junto com o resto.
+
+### `com.unity.purchasing REMOVIDO` — `COMPILE: PASS`, `DEVICE: NOT RUN` (2026-08-15)
+
+Descoberto ao reabrir o Editor: na re-resolução, o Unity **subiu `com.unity.purchasing` de `4.15.1` para `5.4.2` por conta própria**. O log é explícito quanto ao motivo — `com.unity.purchasing@4.15.1 is deprecated: Unity IAP 4 is unsupported as of June 8, 2026`. O estado congelado em `bd9eb0e` já era insustentável: qualquer reabertura do projeto forçaria a migração.
+
+Decisão do Game Director: **remover o pacote inteiro**, em vez de aceitar o salto de versão maior ou voltar para uma versão sem suporte.
+
+Justificativa: nenhum script do HELSING referencia `UnityEngine.Purchasing`, e não há compra dentro do app no escopo. É sobra do template URP. O pacote compilava **14 assemblies** a cada build, para uso zero. Mesmo raciocínio aplicado ao `ai.assistant`: nada entra no caminho crítico do APK sem ser usado. Reversível a qualquer momento se houver loja no futuro.
+
+- Após a remoção: **zero** assemblies `*Purchasing*.dll` em `Library/ScriptAssemblies`, contra 14 antes.
+- Varredura em `Assets/`, `ProjectSettings/` e `Packages/`: nenhuma referência a `com.unity.purchasing` nem a `UnityEngine.Purchasing`.
+- `UnityConnectSettings.asset` mantém a seção `UnityPurchasingSettings` com `m_Enabled: 0` e `m_TestMode: 0`. **Não é resíduo do pacote:** a seção já existia em `5571727`, é configuração estoque do Unity Services e está desligada.
+- `com.unity.services.core` preservado — segue sendo dependência de `com.unity.services.analytics`, e por consequência de `com.unity.analytics`.
+- `COMPILE: PASS` — zero `error CS` e zero `warning CS` após a re-resolução.
+
+O `5.4.2` nunca chegou a ser commitado: o diff sai direto de `4.15.1` para a ausência do pacote.
+
+`REVIEW: NOT RUN`.
 
 ## Known issues
 
@@ -341,7 +361,9 @@ Verificação executada com o Editor fechado:
 
 **`COMMIT` deixou de ser pendência.** O Combat Slice, o ataque da Casull, o feedback de dano e as correções de ABI estão commitados e presentes em `origin/main` até `bd9eb0e`. A remoção dos pacotes está commitada apenas **localmente**: `PUSH: NOT RUN`, e exige autorização explícita do Game Director.
 
-**A ação mais urgente é reabrir o Editor em `C:\HELSING\unity` e confirmar `COMPILE` e `DEVICE`** após a remoção dos pacotes. Enquanto isso não rodar, o projeto está num estado editado e não verificado. Um build de checagem fecha as duas coisas e mede, de quebra, se o tempo voltou a ~200 s e se as 15 exceções desapareceram.
+**`COMPILE` está fechado.** O Editor foi reaberto, re-resolveu os pacotes e compilou com zero `error CS` e zero `warning CS`, tanto após a remoção dos pacotes de IA quanto após a remoção do `purchasing`.
+
+**A ação mais urgente é um build de checagem no POCO X7 Pro**, que é a única coisa que fecha `DEVICE` para as duas remoções. Ele mede de uma vez três hipóteses ainda não confirmadas: se o tempo de build voltou de ~570 s para ~200 s, se as 15 exceções de `EnhancedTouch` desapareceram, e se o app volta a entrar por `com.unity3d.player.UnityPlayerGameActivity` sem que o `adb shell am start` falhe. Nenhuma delas foi medida — todas são expectativa.
 
 Fica registrado, para não se repetir: a sessão do agente chegou a ser aberta em `C:\Game Helsing`, sobra da pasta anterior, onde restaram apenas `Library/` e `Temp/` sem `Assets`, `Packages` nem `ProjectSettings`. A pendência nº 3 do move — reabrir a sessão já em `C:\HELSING` — não tinha sido cumprida.
 
