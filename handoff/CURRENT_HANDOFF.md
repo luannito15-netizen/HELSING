@@ -2,7 +2,7 @@
 
 ## Handoff metadata
 
-HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. Os pacotes de IA não autorizados foram removidos em 2026-08-15, junto com o `com.unity.purchasing`, depreciado e sem nenhum uso no projeto — ambos com autorização explícita do Game Director e com `COMPILE: PASS` no Editor. `COMMIT: PASS`
+HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. Os pacotes de IA não autorizados foram removidos em 2026-08-15, junto com o `com.unity.purchasing`, depreciado e sem nenhum uso no projeto — ambos com autorização explícita do Game Director, `COMPILE: PASS` no Editor e `DEVICE: PASS TÉCNICO` em aparelho — build 299 s contra ~570 s, APK 36,8 MB contra 45,9 MB, e as 15 exceções de `EnhancedTouch` zeradas. `COMMIT: PASS`
 HANDOFF REVISION: DERIVE FROM GIT HISTORY
 WORKTREE AT HANDOFF: LIMPO. Todo o trabalho até a remoção dos pacotes está commitado em `main`. O histórico anterior a esta etapa já está em `origin/main` — `bd9eb0e` é o último commit comum entre local e remoto, e a branch `feat/mobile-controls-real-device` foi integrada. `PUSH: NOT RUN` para o commit desta etapa, que existe apenas localmente. O ruído crônico de `unity/ProjectSettings/PackageManagerSettings.asset` foi resolvido e não deve mais aparecer como pendência
 IMPLEMENTER: CLAUDE CODE nesta etapa, sob `OWNER: CLAUDE CODE` explícito do Game Director; Codex indisponível e sem writer concorrente. O padrão volta a ser `IMPLEMENTER: CODEX` quando ele retornar.
@@ -304,7 +304,7 @@ Build final instalado e aprovado pelo Game Director no POCO X7 Pro. **Todos os i
 
 `REGRESSÃO CONHECIDA, NÃO NOSSA`: o build emite **15 exceções** `ArgumentException: 'InputUpdateType.None' is not a valid update mask`, vindas de `InputSystem.EnhancedTouch.Finger` dentro dos callbacks de `InputSystem.onDeviceChange`. Nenhum código do HELSING usa `EnhancedTouch`; a origem é o Unity App UI, que entra como dependência do `com.unity.ai.inference` — e **não** do `assistant`, como registrado antes. **O input não foi afetado** — o Game Director confirmou joystick, mira, ataque e dash funcionando. O impacto é poluição de log e custo desconhecido em runtime, o que atrapalha usar o Console como sinal limpo em testes futuros. Os três pacotes foram removidos na etapa seguinte; o desaparecimento das exceções é esperado mas **ainda não medido**.
 
-### `PACOTES DE IA REMOVIDOS` — `COMMIT: PASS`, `COMPILE: PASS`, `DEVICE: NOT RUN` (2026-08-15)
+### `PACOTES DE IA REMOVIDOS` — `COMMIT: PASS`, `COMPILE: PASS`, `DEVICE: PASS TÉCNICO` (2026-08-15)
 
 `OWNER: CLAUDE CODE` com autorização explícita do Game Director, que para este escopo supera o `Do not touch` de packages e de `PackageManagerSettings.asset`. Executado com o Unity **fechado**: o Editor mantém `ProjectSettings.asset` e `EditorBuildSettings.asset` em memória e sobrescreveria as edições ao salvar.
 
@@ -322,13 +322,27 @@ Verificação executada com o Editor fechado:
 
 `COMPILE: PASS` — o Editor foi reaberto em `C:\HELSING\unity` e re-resolveu os pacotes com **zero `error CS` e zero `warning CS`**. As edições sobreviveram intactas à reabertura: `scriptingDefineSymbols` continua `{}`, `m_configObjects` continua sem o App UI, `Assets/Plugins/` não foi recriada e o manifest tem apenas `com.unity.ai.navigation`. Os dois `error:` no log são handshake de licença no boot, resolvidos em seguida pelo próprio cliente.
 
-`DEVICE: NOT RUN` — nada foi instalado em aparelho após a remoção. O ganho esperado, **não medido**, é o build voltar de ~570 s para ~200 s e as 15 exceções de `EnhancedTouch` desaparecerem. Só um build no POCO fecha isso.
+`DEVICE: PASS TÉCNICO` — build, instalação e lançamento executados no POCO X7 Pro (`AU6HY5BAV4ZPC6SG`, `2412DPC0AG`, `rodin`) em 2026-08-15, com o Editor aberto e o build disparado via `manage_build` do MCP. As três hipóteses que estavam registradas como expectativa foram medidas:
+
+| medida | com os pacotes | após a remoção |
+| --- | --- | --- |
+| tempo de build | ~570 s | **299,2 s** |
+| tamanho do APK | 45,9 MB | **36,8 MB** |
+| exceções `InputUpdateType.None` | 15 | **0** |
+
+- **Activity de entrada confirmada no artefato**, não por inferência: `aapt2 dump badging` reporta `launchable-activity: name='com.unity3d.player.UnityPlayerGameActivity'`. O `adb shell am start` com essa activity subiu o app sem `Activity class does not exist` — o sintoma exato que o pacote tinha causado.
+- `logcat` de 25 s com o app em execução: do PID do processo saiu **uma única** entrada de exceção, `java.lang.ClassNotFoundException` para `com.google.android.play.core.assetpacks.AssetPackManager`. É mensagem conhecida e benigna do Unity Android quando não se usa Play Asset Delivery, não é regressão e não impede a execução. Zero `ArgumentException`, zero `EnhancedTouch`, zero `FATAL`, zero `AndroidRuntime`.
+- App reportou `Scripting Backend 'il2cpp'`, `CPU 'arm64-v8a'`, `Stripping 'Enabled'`, `Min API 26`, `Target API 36`, versão `0.1.0`.
+
+O tempo **não** voltou aos ~200 s citados antes, e a comparação com aquele número seria enganosa: os ~200 s eram com backend `Mono2x`/ARMv7, anterior à troca para `IL2CPP`. Contra o mesmo backend, a queda real é de ~570 s para 299 s.
+
+`SMOKE MANUAL: NOT RUN` — jogabilidade não foi exercitada. Joystick, mira, ataque, dash, morte e respawn continuam dependendo do smoke do Game Director, como em todos os ciclos anteriores. O que está provado aqui é que o app compila, empacota, instala, lança pela activity correta e roda limpo.
 
 **Ruído de fim de linha eliminado.** Cinco dos seis arquivos que apareciam modificados nunca tinham mudado: com `core.autocrlf=true` e o Unity gravando LF, o git relatava diferença inexistente. Comprovado por hash — índice e worktree com o mesmo blob. O `.gitattributes` passou a declarar `text eol=lf` para os assets de texto do Unity. `PackageManagerSettings.asset` foi revertido: o diff era `oneTimePackageErrorsPopUpShown` e dois IDs internos de entidade, sem significado de projeto.
 
 `REVIEW: NOT RUN` — escrita pelo mesmo agente, entra na fila do checkpoint do `P0` junto com o resto.
 
-### `com.unity.purchasing REMOVIDO` — `COMPILE: PASS`, `DEVICE: NOT RUN` (2026-08-15)
+### `com.unity.purchasing REMOVIDO` — `COMPILE: PASS`, `DEVICE: PASS TÉCNICO` (2026-08-15)
 
 Descoberto ao reabrir o Editor: na re-resolução, o Unity **subiu `com.unity.purchasing` de `4.15.1` para `5.4.2` por conta própria**. O log é explícito quanto ao motivo — `com.unity.purchasing@4.15.1 is deprecated: Unity IAP 4 is unsupported as of June 8, 2026`. O estado congelado em `bd9eb0e` já era insustentável: qualquer reabertura do projeto forçaria a migração.
 
@@ -363,7 +377,11 @@ O `5.4.2` nunca chegou a ser commitado: o diff sai direto de `4.15.1` para a aus
 
 **`COMPILE` está fechado.** O Editor foi reaberto, re-resolveu os pacotes e compilou com zero `error CS` e zero `warning CS`, tanto após a remoção dos pacotes de IA quanto após a remoção do `purchasing`.
 
-**A ação mais urgente é um build de checagem no POCO X7 Pro**, que é a única coisa que fecha `DEVICE` para as duas remoções. Ele mede de uma vez três hipóteses ainda não confirmadas: se o tempo de build voltou de ~570 s para ~200 s, se as 15 exceções de `EnhancedTouch` desapareceram, e se o app volta a entrar por `com.unity3d.player.UnityPlayerGameActivity` sem que o `adb shell am start` falhe. Nenhuma delas foi medida — todas são expectativa.
+**`DEVICE` está fechado no lado técnico.** O build rodou no POCO X7 Pro, o APK instalou, lançou pela activity padrão e ficou 25 s em execução com o `logcat` limpo. As três hipóteses que estavam registradas como expectativa foram medidas e confirmadas.
+
+**A ação mais urgente é o smoke manual do Game Director** sobre este APK — `Builds/HELSING_clean_arm64.apk`, já instalado no aparelho. Joystick, mira, ataque, dash, morte, respawn e esquiva do wind-up: nada disso foi exercitado, e nenhuma automação cobre a sensação de jogo. É o mesmo gate dos ciclos anteriores.
+
+Depois disso, a decisão seguinte é de escopo e não técnica: o `VISION / LOCKED ORDER RECONCILIATION` continua `OPEN`, e o checkpoint do `P0` segue devido, com revisor que não seja o autor.
 
 Fica registrado, para não se repetir: a sessão do agente chegou a ser aberta em `C:\Game Helsing`, sobra da pasta anterior, onde restaram apenas `Library/` e `Temp/` sem `Assets`, `Packages` nem `ProjectSettings`. A pendência nº 3 do move — reabrir a sessão já em `C:\HELSING` — não tinha sido cumprida.
 
