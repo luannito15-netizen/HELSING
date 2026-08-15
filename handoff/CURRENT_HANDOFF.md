@@ -2,9 +2,9 @@
 
 ## Handoff metadata
 
-HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. `COMMIT: NOT RUN`
+HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. Os pacotes de IA não autorizados foram removidos em 2026-08-15, com autorização explícita do Game Director. `COMMIT: PASS`
 HANDOFF REVISION: DERIVE FROM GIT HISTORY
-WORKTREE AT HANDOFF: LIMPO exceto `unity/ProjectSettings/PackageManagerSettings.asset`, preexistente e fora de escopo. Todo o trabalho acumulado até 2026-08-15 foi commitado em `ced3ebf`, na branch `feat/mobile-controls-real-device`, com autorização explícita do Game Director. `MERGE PARA MAIN: NOT RUN`. `PUSH: NOT RUN` — o commit existe apenas localmente
+WORKTREE AT HANDOFF: LIMPO. Todo o trabalho até a remoção dos pacotes está commitado em `main`. O histórico anterior a esta etapa já está em `origin/main` — `bd9eb0e` é o último commit comum entre local e remoto, e a branch `feat/mobile-controls-real-device` foi integrada. `PUSH: NOT RUN` para o commit desta etapa, que existe apenas localmente. O ruído crônico de `unity/ProjectSettings/PackageManagerSettings.asset` foi resolvido e não deve mais aparecer como pendência
 IMPLEMENTER: CLAUDE CODE nesta etapa, sob `OWNER: CLAUDE CODE` explícito do Game Director; Codex indisponível e sem writer concorrente. O padrão volta a ser `IMPLEMENTER: CODEX` quando ele retornar.
 REVIEW MODE: CHECKPOINT
 LAST REVIEW STATUS: `NOT RUN` para o escopo de 2026-08-15 — `ShotTracerView`, `DummyRespawner`, `HitscanWeapon.Fired`, joystick dinâmico, `Boundaries` e a troca para `IL2CPP / ARM64` foram escritos pelo Claude Code e **não foram revisados por terceiro**. O `PARTIAL` anterior, dos dois `P1` de ciclo de vida de input, também segue sem auditoria independente pelo mesmo motivo: o autor não deve revisar a própria mudança
@@ -284,10 +284,15 @@ Detectado ao fim da sessão, **não introduzido pelo agente** e não autorizado 
 - Instalou o Unity App UI como dependência.
 - Criou `unity/Assets/Plugins/Android/AndroidManifest.xml`, que não existia.
 - **Trocou a activity de entrada do app** de `com.unity3d.player.UnityPlayerGameActivity` para `com.unity3d.player.appui.AppUIGameActivity`. O `adb shell am start` falhou com `Activity class does not exist` até a activity nova ser descoberta pelo `aapt2 dump badging`.
-- Alterou `Packages/manifest.json`, `packages-lock.json` e `ProjectSettings/GraphicsSettings.asset`; criou `ProjectSettings/Packages/com.unity.ai.assistant/Settings.json`.
+- Alterou `Packages/manifest.json` e `packages-lock.json`; criou `ProjectSettings/Packages/com.unity.ai.assistant/Settings.json`.
 - Tempo de build subiu de ~200 s para ~570 s.
 
-Nenhuma dessas mudanças foi revertida — reverter é decisão de dependência e exige o Editor livre e autorização. **Recomendação:** remover o pacote, salvo se o Game Director quiser usá-lo; um assistente de IA no caminho crítico do APK é risco desnecessário para o build de produção. Qualquer script de lançamento automatizado precisa usar a activity nova enquanto o pacote existir.
+**Dois pontos deste registro estavam errados**, corrigidos na etapa de remoção contra o diff real de `d4b9a61`:
+
+- `ProjectSettings/GraphicsSettings.asset` **não** foi alterado. O último commit que tocou esse arquivo é `5571727`, muito anterior ao pacote. A suspeita não se sustenta no histórico.
+- O pacote **não veio sozinho**: `com.unity.ai.inference` entrou no mesmo commit, e é ele — não o `assistant` — que declara `com.unity.dt.app-ui` como dependência. A atribuição do Unity App UI ao `assistant` estava incorreta, e remover só o `assistant` teria deixado a regressão de `EnhancedTouch` no lugar.
+
+**Dois rastros não estavam registrados:** `scriptingDefineSymbols` ganhou `Standalone: SENTIS_ANALYTICS_ENABLED` em `ProjectSettings.asset`, e `com.unity.dt.app-ui` foi inserido em `m_configObjects` no `EditorBuildSettings.asset`.
 
 ### `DEVICE: PASS` total do Combat Slice (2026-08-15, fecho da sessão)
 
@@ -297,7 +302,29 @@ Build final instalado e aprovado pelo Game Director no POCO X7 Pro. **Todos os i
 - Esquiva do wind-up do Ghoul: `PASS` — sair de perto durante os `0,35 s` evita o dano, confirmando que a reconferência de distância no impacto funciona e que o combate tem espaço para reação.
 - Joystick, dash por arrasto, morte e respawn: `PASS`.
 
-`REGRESSÃO CONHECIDA, NÃO NOSSA`: o build emite **15 exceções** `ArgumentException: 'InputUpdateType.None' is not a valid update mask`, vindas de `InputSystem.EnhancedTouch.Finger` dentro dos callbacks de `InputSystem.onDeviceChange`. Nenhum código do HELSING usa `EnhancedTouch`; a origem é o Unity App UI, dependência do `com.unity.ai.assistant`. **O input não foi afetado** — o Game Director confirmou joystick, mira, ataque e dash funcionando. O impacto é poluição de log e custo desconhecido em runtime, o que atrapalha usar o Console como sinal limpo em testes futuros. Reforça a recomendação de remover o pacote.
+`REGRESSÃO CONHECIDA, NÃO NOSSA`: o build emite **15 exceções** `ArgumentException: 'InputUpdateType.None' is not a valid update mask`, vindas de `InputSystem.EnhancedTouch.Finger` dentro dos callbacks de `InputSystem.onDeviceChange`. Nenhum código do HELSING usa `EnhancedTouch`; a origem é o Unity App UI, que entra como dependência do `com.unity.ai.inference` — e **não** do `assistant`, como registrado antes. **O input não foi afetado** — o Game Director confirmou joystick, mira, ataque e dash funcionando. O impacto é poluição de log e custo desconhecido em runtime, o que atrapalha usar o Console como sinal limpo em testes futuros. Os três pacotes foram removidos na etapa seguinte; o desaparecimento das exceções é esperado mas **ainda não medido**.
+
+### `PACOTES DE IA REMOVIDOS` — `COMMIT: PASS`, `COMPILE: NOT RUN`, `DEVICE: NOT RUN` (2026-08-15)
+
+`OWNER: CLAUDE CODE` com autorização explícita do Game Director, que para este escopo supera o `Do not touch` de packages e de `PackageManagerSettings.asset`. Executado com o Unity **fechado**: o Editor mantém `ProjectSettings.asset` e `EditorBuildSettings.asset` em memória e sobrescreveria as edições ao salvar.
+
+Removidos `com.unity.ai.assistant`, `com.unity.ai.inference` e o órfão `com.unity.dt.app-ui`. `com.unity.ai.navigation` foi preservado — é NavMesh legítimo, presente desde `5571727`.
+
+Revertidos os rastros: a árvore `Assets/Plugins/` inteira, `Plugins.meta` incluído, que não existia antes do pacote; `ProjectSettings/Packages/com.unity.ai.assistant/`; o define `SENTIS_ANALYTICS_ENABLED`; e a entrada `com.unity.dt.app-ui` em `m_configObjects`.
+
+**A activity de entrada volta ao padrão.** Sem `Assets/Plugins/Android/AndroidManifest.xml`, o Unity regenera o manifest e o app entra de novo por `com.unity3d.player.UnityPlayerGameActivity` — a configuração que teve `REAL DEVICE: PASS` em `ced3ebf`. Scripts de lançamento automatizado devem voltar à activity padrão. O arquivo trazia `VIBRATE`, `allowBackup=false` e `usesCleartextTraffic=false`, que nunca foram decisão do Game Director; se esse hardening for desejado, entra como mudança deliberada e revisável, não de carona numa remoção de pacote.
+
+Verificação executada com o Editor fechado:
+
+- Varredura por `ai.assistant|ai.inference|app-ui|AppUIGameActivity|SENTIS` em todo `unity/` fora de `Library`: zero ocorrências.
+- `manifest.json` e `packages-lock.json` parseiam como JSON válido.
+- Configuração de build preservada: `applicationIdentifier Android = com.helsing.game`, `productName = HELSING`, backend `IL2CPP`, `AndroidTargetArchitectures = 2` (ARM64), `minSdk 26`, landscape exclusivo, cena `[0] Prototype_Arena_01` habilitada e `SampleScene` desabilitada.
+
+`COMPILE: NOT RUN` e `DEVICE: NOT RUN` — a re-resolução dos pacotes e a limpeza do `PackageCache` só ocorrem quando o Editor reabrir, e nada foi compilado nem instalado após a remoção. O ganho esperado, **não medido**, é o build voltar de ~570 s para ~200 s e as 15 exceções de `EnhancedTouch` desaparecerem. É normal o Unity reescrever parte de `packages-lock.json` ao reabrir.
+
+**Ruído de fim de linha eliminado.** Cinco dos seis arquivos que apareciam modificados nunca tinham mudado: com `core.autocrlf=true` e o Unity gravando LF, o git relatava diferença inexistente. Comprovado por hash — índice e worktree com o mesmo blob. O `.gitattributes` passou a declarar `text eol=lf` para os assets de texto do Unity. `PackageManagerSettings.asset` foi revertido: o diff era `oneTimePackageErrorsPopUpShown` e dois IDs internos de entidade, sem significado de projeto.
+
+`REVIEW: NOT RUN` — escrita pelo mesmo agente, entra na fila do checkpoint do `P0` junto com o resto.
 
 ## Known issues
 
@@ -307,16 +334,20 @@ Build final instalado e aprovado pelo Game Director no POCO X7 Pro. **Todos os i
 - O player loop não avança com o Editor sem foco (`runInBackground=False`), o que impede validar movimento e mira por automação. Requer um humano com a janela do Editor em foco.
 - `P3` **RESOLVIDO** nesta etapa; a descrição anterior estava incorreta quanto à causa. Ver a seção de landscape e fonte única acima.
 - `PROJECT-WIDE ACTIONS — OPEN`: `Assets/InputSystem_Actions.inputactions` continua definido como Project-wide Actions do Unity 6 e não é lido pelo runtime do HELSING. Mantê-lo, removê-lo ou substituí-lo por `HelsingGameplay` é decisão de configuração de projeto e não foi tocado.
-- `unity/ProjectSettings/PackageManagerSettings.asset` permanece dirty, preexistente, unstaged e fora do escopo. Não foi revertido nem incluído.
+- `unity/ProjectSettings/PackageManagerSettings.asset` **RESOLVIDO**: revertido na etapa de remoção dos pacotes. O diff arrastado por várias sessões era `oneTimePackageErrorsPopUpShown` e dois IDs internos de entidade. Se reaparecer, é ruído de UI do Package Manager, não mudança de projeto.
 - O Unity MCP produziu warnings externos de WebSocket e `GameObjectSerializer`; nenhum erro de gameplay foi encontrado.
 
 ## Next owner action
 
-**`COMMIT` é a ação mais urgente.** O último commit é `66d3335`, de 2026-08-14. Todo o Combat Slice, o ataque da Casull, o feedback de dano, as correções de ABI e tudo desta etapa estão **apenas no worktree**, que ainda por cima foi movido de pasta hoje. Nada disso sobrevive a um acidente. Exige autorização explícita do Game Director, conforme `Do not touch`.
+**`COMMIT` deixou de ser pendência.** O Combat Slice, o ataque da Casull, o feedback de dano e as correções de ABI estão commitados e presentes em `origin/main` até `bd9eb0e`. A remoção dos pacotes está commitada apenas **localmente**: `PUSH: NOT RUN`, e exige autorização explícita do Game Director.
+
+**A ação mais urgente é reabrir o Editor em `C:\HELSING\unity` e confirmar `COMPILE` e `DEVICE`** após a remoção dos pacotes. Enquanto isso não rodar, o projeto está num estado editado e não verificado. Um build de checagem fecha as duas coisas e mede, de quebra, se o tempo voltou a ~200 s e se as 15 exceções desapareceram.
+
+Fica registrado, para não se repetir: a sessão do agente chegou a ser aberta em `C:\Game Helsing`, sobra da pasta anterior, onde restaram apenas `Library/` e `Temp/` sem `Assets`, `Packages` nem `ProjectSettings`. A pendência nº 3 do move — reabrir a sessão já em `C:\HELSING` — não tinha sido cumprida.
 
 Com o `P0 — Foundation` e o `REAL DEVICE` fechados, a decisão seguinte é de escopo, não técnica: o `VISION / LOCKED ORDER RECONCILIATION` continua `OPEN` em `NEXT_STEPS.md`. O Production Pack propõe seguir para `P2 — Extraction Loop`, enquanto o marco `ALUCARD — PLAYABLE PRE-ALPHA 01` ainda exige Jackal, weapon swap e um poder. O Game Director precisa decidir se são dois gates formais ou um marco indivisível, antes de abrir a próxima frente.
 
-Pendências menores registradas: slider de sensibilidade de mira nas configurações; `.utmp/` no `.gitignore`; e a `REFERÊNCIA DE CONTROLE — WORKING` (MOBA mobile) ainda sem entrada formal em `DECISIONS_LOG.md`.
+Pendências menores registradas: slider de sensibilidade de mira nas configurações; e a `REFERÊNCIA DE CONTROLE — WORKING` (MOBA mobile) ainda sem entrada formal em `DECISIONS_LOG.md`. O `.utmp/` já está no `.gitignore` e sai desta lista.
 
 ## Do not touch
 
