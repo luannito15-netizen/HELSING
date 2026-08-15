@@ -2,9 +2,9 @@
 
 ## Handoff metadata
 
-HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. Os pacotes de IA não autorizados foram removidos em 2026-08-15, junto com o `com.unity.purchasing`, depreciado e sem nenhum uso no projeto — ambos com autorização explícita do Game Director, `COMPILE: PASS` no Editor e `DEVICE: PASS TÉCNICO` em aparelho — build 299 s contra ~570 s, APK 36,8 MB contra 45,9 MB, e as 15 exceções de `EnhancedTouch` zeradas. `COMMIT: PASS`
+HANDOFF STATUS: `CORE-001` PASS; `CORE-002` PASS — **`REAL DEVICE: PASS`** em 2026-08-15, no POCO X7 Pro (Android 16, `arm64-v8a`), com dois ciclos de build/instalação/gameplay e `adb logcat` sem uma única exceção. Repositório movido para `C:\HELSING`, build Android desbloqueado, backend corrigido para `IL2CPP / ARM64`. `P0 — Foundation` fechado. Os pacotes de IA não autorizados foram removidos em 2026-08-15, junto com o `com.unity.purchasing`, depreciado e sem nenhum uso no projeto — ambos com autorização explícita do Game Director, `COMPILE: PASS` no Editor e **`DEVICE: PASS`** em aparelho, com aprovação integral do Game Director jogando o APK — build 299 s contra ~570 s, APK 36,8 MB contra 45,9 MB, e as 15 exceções de `EnhancedTouch` zeradas. `COMMIT: PASS`
 HANDOFF REVISION: DERIVE FROM GIT HISTORY
-WORKTREE AT HANDOFF: LIMPO. Todo o trabalho até a remoção dos pacotes está commitado em `main`. O histórico anterior a esta etapa já está em `origin/main` — `bd9eb0e` é o último commit comum entre local e remoto, e a branch `feat/mobile-controls-real-device` foi integrada. `PUSH: NOT RUN` para o commit desta etapa, que existe apenas localmente. O ruído crônico de `unity/ProjectSettings/PackageManagerSettings.asset` foi resolvido e não deve mais aparecer como pendência
+WORKTREE AT HANDOFF: LIMPO. Todo o trabalho está commitado em `main` e **`PUSH: PASS`** — `main` e `origin/main` sincronizados, sem divergência. As remoções entraram pela branch `chore/remove-unauthorized-ai-packages`, integrada por fast-forward com autorização explícita do Game Director; `feat/mobile-controls-real-device` já havia sido integrada antes. O ruído crônico de `unity/ProjectSettings/PackageManagerSettings.asset` foi resolvido e não deve mais aparecer como pendência
 IMPLEMENTER: CLAUDE CODE nesta etapa, sob `OWNER: CLAUDE CODE` explícito do Game Director; Codex indisponível e sem writer concorrente. O padrão volta a ser `IMPLEMENTER: CODEX` quando ele retornar.
 REVIEW MODE: CHECKPOINT
 LAST REVIEW STATUS: `NOT RUN` para o escopo de 2026-08-15 — `ShotTracerView`, `DummyRespawner`, `HitscanWeapon.Fired`, joystick dinâmico, `Boundaries` e a troca para `IL2CPP / ARM64` foram escritos pelo Claude Code e **não foram revisados por terceiro**. O `PARTIAL` anterior, dos dois `P1` de ciclo de vida de input, também segue sem auditoria independente pelo mesmo motivo: o autor não deve revisar a própria mudança
@@ -304,7 +304,7 @@ Build final instalado e aprovado pelo Game Director no POCO X7 Pro. **Todos os i
 
 `REGRESSÃO CONHECIDA, NÃO NOSSA`: o build emite **15 exceções** `ArgumentException: 'InputUpdateType.None' is not a valid update mask`, vindas de `InputSystem.EnhancedTouch.Finger` dentro dos callbacks de `InputSystem.onDeviceChange`. Nenhum código do HELSING usa `EnhancedTouch`; a origem é o Unity App UI, que entra como dependência do `com.unity.ai.inference` — e **não** do `assistant`, como registrado antes. **O input não foi afetado** — o Game Director confirmou joystick, mira, ataque e dash funcionando. O impacto é poluição de log e custo desconhecido em runtime, o que atrapalha usar o Console como sinal limpo em testes futuros. Os três pacotes foram removidos na etapa seguinte; o desaparecimento das exceções é esperado mas **ainda não medido**.
 
-### `PACOTES DE IA REMOVIDOS` — `COMMIT: PASS`, `COMPILE: PASS`, `DEVICE: PASS TÉCNICO` (2026-08-15)
+### `PACOTES DE IA REMOVIDOS` — `COMMIT: PASS`, `COMPILE: PASS`, `DEVICE: PASS` (2026-08-15)
 
 `OWNER: CLAUDE CODE` com autorização explícita do Game Director, que para este escopo supera o `Do not touch` de packages e de `PackageManagerSettings.asset`. Executado com o Unity **fechado**: o Editor mantém `ProjectSettings.asset` e `EditorBuildSettings.asset` em memória e sobrescreveria as edições ao salvar.
 
@@ -336,13 +336,13 @@ Verificação executada com o Editor fechado:
 
 O tempo **não** voltou aos ~200 s citados antes, e a comparação com aquele número seria enganosa: os ~200 s eram com backend `Mono2x`/ARMv7, anterior à troca para `IL2CPP`. Contra o mesmo backend, a queda real é de ~570 s para 299 s.
 
-`SMOKE MANUAL: NOT RUN` — jogabilidade não foi exercitada. Joystick, mira, ataque, dash, morte e respawn continuam dependendo do smoke do Game Director, como em todos os ciclos anteriores. O que está provado aqui é que o app compila, empacota, instala, lança pela activity correta e roda limpo.
+`SMOKE MANUAL: PASS` — o Game Director jogou este APK no aparelho e aprovou integralmente, sem ressalva. Com isso `DEVICE` deixa de ser parcial: o app compila, empacota, instala, lança pela activity correta, roda limpo **e** joga. As duas remoções não causaram nenhuma regressão perceptível em joystick, mira, ataque, dash, morte, respawn ou esquiva.
 
 **Ruído de fim de linha eliminado.** Cinco dos seis arquivos que apareciam modificados nunca tinham mudado: com `core.autocrlf=true` e o Unity gravando LF, o git relatava diferença inexistente. Comprovado por hash — índice e worktree com o mesmo blob. O `.gitattributes` passou a declarar `text eol=lf` para os assets de texto do Unity. `PackageManagerSettings.asset` foi revertido: o diff era `oneTimePackageErrorsPopUpShown` e dois IDs internos de entidade, sem significado de projeto.
 
 `REVIEW: NOT RUN` — escrita pelo mesmo agente, entra na fila do checkpoint do `P0` junto com o resto.
 
-### `com.unity.purchasing REMOVIDO` — `COMPILE: PASS`, `DEVICE: PASS TÉCNICO` (2026-08-15)
+### `com.unity.purchasing REMOVIDO` — `COMPILE: PASS`, `DEVICE: PASS` (2026-08-15)
 
 Descoberto ao reabrir o Editor: na re-resolução, o Unity **subiu `com.unity.purchasing` de `4.15.1` para `5.4.2` por conta própria**. O log é explícito quanto ao motivo — `com.unity.purchasing@4.15.1 is deprecated: Unity IAP 4 is unsupported as of June 8, 2026`. O estado congelado em `bd9eb0e` já era insustentável: qualquer reabertura do projeto forçaria a migração.
 
@@ -362,9 +362,9 @@ O `5.4.2` nunca chegou a ser commitado: o diff sai direto de `4.15.1` para a aus
 
 ## Known issues
 
-- `CORE-002` fechado no Editor. O único item pendente é `REAL DEVICE: NOT RUN` — teste touch em aparelho real, com dois dedos simultâneos, que nem o harness nem o mouse na Game View reproduzem. Continua obrigatório antes do beta mobile.
+- `CORE-002` **fechado por completo**. O `REAL DEVICE` que era o último pendente recebeu `PASS` em 2026-08-15, incluindo o touch com dois dedos simultâneos que nem o harness nem o mouse na Game View reproduzem. Esta entrada ficou desatualizada por duas rodadas e é mantida aqui apenas como histórico.
 - `HARNESS DEFECT — P2 ABERTO, não corrigido nesta etapa`: o menu item `HELSING/Validation/Run Multi-Touch Handler Harness` também roda em Edit Mode, onde produz resultado enganoso. Fora do Play Mode o Unity não executa `Awake()` em `MonoBehaviour` comum, então `VirtualJoystickControl.controlRect` e `ManualAimDragControl.interactionRect` ficam `null`, `UpdatePointer`/`TryGetLocalPoint` retornam cedo e os controles nunca ativam. A execução em Edit Mode retornou `RESULT: FAIL` com quatro `Assertion failed on expression: 'ShouldRunBehaviour()'` — o `SendMessage` de `OnApplicationFocus` não é entregue — e deixou um erro transitório `The referenced script (Unknown) on this Behaviour is missing!` no domain reload seguinte. Esse erro não se reproduz em ciclos de Play Mode, com ou sem harness, e não há componente ausente em memória. Naquela execução os quatro `FAIL` eram artefato do contexto e os cinco `PASS` eram vazios, pois só afirmavam flags já `false`. Correção proposta e **não aplicada**: guardar o menu item com `EditorApplication.isPlaying`, ou resolver os `RectTransform` sob demanda, para que o harness nunca reporte resultado sem significado.
-- `REAL DEVICE` continua `NOT RUN`. Game View com mouse fornece um único pointer e não cobre dois pointers concorrentes.
+- `REAL DEVICE` **RESOLVIDO** em 2026-08-15. Permanece válida a limitação que o motivou: a Game View com mouse fornece um único pointer e não cobre dois pointers concorrentes, então qualquer mudança futura em input volta a exigir aparelho real.
 - O player loop não avança com o Editor sem foco (`runInBackground=False`), o que impede validar movimento e mira por automação. Requer um humano com a janela do Editor em foco.
 - `P3` **RESOLVIDO** nesta etapa; a descrição anterior estava incorreta quanto à causa. Ver a seção de landscape e fonte única acima.
 - `PROJECT-WIDE ACTIONS — OPEN`: `Assets/InputSystem_Actions.inputactions` continua definido como Project-wide Actions do Unity 6 e não é lido pelo runtime do HELSING. Mantê-lo, removê-lo ou substituí-lo por `HelsingGameplay` é decisão de configuração de projeto e não foi tocado.
@@ -373,15 +373,15 @@ O `5.4.2` nunca chegou a ser commitado: o diff sai direto de `4.15.1` para a aus
 
 ## Next owner action
 
-**`COMMIT` deixou de ser pendência.** O Combat Slice, o ataque da Casull, o feedback de dano e as correções de ABI estão commitados e presentes em `origin/main` até `bd9eb0e`. A remoção dos pacotes está commitada apenas **localmente**: `PUSH: NOT RUN`, e exige autorização explícita do Game Director.
+**`COMMIT` e `PUSH` deixaram de ser pendência.** O Combat Slice, o ataque da Casull, o feedback de dano, as correções de ABI e as três remoções estão todos em `origin/main`, sem divergência entre local e remoto. Nada do trabalho existe apenas neste disco.
 
 **`COMPILE` está fechado.** O Editor foi reaberto, re-resolveu os pacotes e compilou com zero `error CS` e zero `warning CS`, tanto após a remoção dos pacotes de IA quanto após a remoção do `purchasing`.
 
-**`DEVICE` está fechado no lado técnico.** O build rodou no POCO X7 Pro, o APK instalou, lançou pela activity padrão e ficou 25 s em execução com o `logcat` limpo. As três hipóteses que estavam registradas como expectativa foram medidas e confirmadas.
+**`DEVICE` está fechado por completo**, técnico e jogado. O build rodou no POCO X7 Pro, o APK instalou, lançou pela activity padrão, rodou com `logcat` limpo e recebeu aprovação integral do Game Director em `Builds/HELSING_clean_arm64.apk`. As três hipóteses que estavam registradas como expectativa foram medidas e confirmadas. Não há pendência de verificação em aberto para as remoções.
 
-**A ação mais urgente é o smoke manual do Game Director** sobre este APK — `Builds/HELSING_clean_arm64.apk`, já instalado no aparelho. Joystick, mira, ataque, dash, morte, respawn e esquiva do wind-up: nada disso foi exercitado, e nenhuma automação cobre a sensação de jogo. É o mesmo gate dos ciclos anteriores.
+**A ação mais urgente passa a ser o checkpoint do `P0`**, que segue `NOT RUN` e agora acumula também os três commits de remoção. O revisor não pode ser o autor: todo o escopo de 2026-08-15, remoções inclusive, foi escrito pelo Claude Code. Esse é o único gate que continua bloqueando formalmente a abertura da próxima frente.
 
-Depois disso, a decisão seguinte é de escopo e não técnica: o `VISION / LOCKED ORDER RECONCILIATION` continua `OPEN`, e o checkpoint do `P0` segue devido, com revisor que não seja o autor.
+Em paralelo, a decisão de escopo continua `OPEN`: o `VISION / LOCKED ORDER RECONCILIATION` em `NEXT_STEPS.md` não foi resolvido. O Production Pack propõe seguir para `P2 — Extraction Loop`, enquanto o marco `ALUCARD — PLAYABLE PRE-ALPHA 01` ainda exige Jackal, weapon swap e um poder. É decisão do Game Director se são dois gates formais ou um marco indivisível.
 
 Fica registrado, para não se repetir: a sessão do agente chegou a ser aberta em `C:\Game Helsing`, sobra da pasta anterior, onde restaram apenas `Library/` e `Temp/` sem `Assets`, `Packages` nem `ProjectSettings`. A pendência nº 3 do move — reabrir a sessão já em `C:\HELSING` — não tinha sido cumprida.
 
