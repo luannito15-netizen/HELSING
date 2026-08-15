@@ -4,7 +4,7 @@
 
 `REVERSIBILITY FIRST` — preservar separações suficientes para substituir uma escolha provisória com impacto localizado e previsível. Isso não autoriza frameworks genéricos, abstrações sem uso ou infraestrutura antecipada.
 
-Para cada sistema, distinguir visão, contrato observável e implementação. Hoje, nenhum gameplay próprio foi implementado em `unity/`; soluções citadas abaixo são direções, não descrição de runtime existente.
+Para cada sistema, distinguir visão, contrato observável e implementação. `CORE-001` implementou input desktop/gamepad, motor, aim/facing e follow de câmera; `CORE-002` adicionou adaptadores UI para movimento e mira manual. Os demais itens continuam como direções, não runtime existente.
 
 ## Guardrails
 
@@ -23,18 +23,28 @@ Para cada sistema, distinguir visão, contrato observável e implementação. Ho
 ### Movement
 
 - **PRODUCT VISION:** controle responsivo de Alucard em mobile landscape.
-- **GAMEPLAY CONTRACT:** movimento 360°, previsível e independente dos valores internos ou da implementação concreta da câmera.
-- **CURRENT IMPLEMENTATION:** `NONE`.
-- **DECISION STATE:** contrato `WORKING`; velocidade e aceleração `TUNING / OPEN`.
+- **GAMEPLAY CONTRACT:** movimento 360°, previsível e independente dos valores internos ou da implementação concreta da câmera; movimento não determina facing durante uma mira válida.
+- **CURRENT IMPLEMENTATION:** `PlayerInputReader` fornece uma intenção unificada, priorizando o analógico virtual somente durante interação; `PlayerMovement` converte essa intenção por uma base planar opcional e move um `CharacterController`.
+- **DECISION STATE:** independência entre movimento e mira `LOCKED`; motor atual `WORKING`; velocidade, aceleração, desaceleração e gravidade `TUNING / OPEN`.
 - **REVERSAL PATH:** trocar `CharacterController`, Rigidbody ou solução própria atrás de um componente motor e uma entrada vetorial estável.
 - **COUPLING RISK:** câmera, dash, animação e colisão.
 - **MIGRATION COST:** `LOW` antes de Animator/root motion; `MEDIUM` depois.
+
+### Aim / facing
+
+- **PRODUCT VISION:** mirar com precisão sem sacrificar movimento livre, strafe, recuo ou resposta quando parado.
+- **GAMEPLAY CONTRACT:** mouse controla aim/facing no fallback desktop; futuro drag touch alimenta o mesmo aim intent; uma direção válida é preservada e exposta sem movimento sobrescrevê-la.
+- **CURRENT IMPLEMENTATION:** `PointerPosition` ou `manualAimIntent` alimentam `PlayerAimFacing`; drag ativo tem prioridade e o release mantém brevemente `AimDirection` antes do retorno ao mouse. O componente gira somente o Player e `FacingMarker` torna a frente legível.
+- **DECISION STATE:** independência, fallback mouse, equivalência conceitual do drag touch e prioridade da mira válida `LOCKED`; projeção, layers, distância mínima, indicador e velocidade `TUNING / OPEN`.
+- **REVERSAL PATH:** substituir plano por raycast/superfície ou o mouse por touch sem alterar `PlayerMovement`, `GameplayCamera` ou consumidores futuros de `AimDirection`.
+- **COUPLING RISK:** input, weapons, abilities, animation e targeting.
+- **MIGRATION COST:** `LOW` antes de Animator/combate; `MEDIUM` depois.
 
 ### Targeting
 
 - **PRODUCT VISION:** toque acessível com agência preservada por mira manual.
 - **GAMEPLAY CONTRACT:** selecionar somente alvos válidos e permitir override por direção/arrasto.
-- **CURRENT IMPLEMENTATION:** `NONE`.
+- **CURRENT IMPLEMENTATION:** `NONE`; aim/facing planar existe, mas ainda não seleciona nem avalia alvos.
 - **DECISION STATE:** gesto `LOCKED`; algoritmo `OPEN`.
 - **REVERSAL PATH:** manter coleta, scoring e seleção separados; consumidores recebem um alvo/aim intent, não detalhes do algoritmo.
 - **COUPLING RISK:** input, armas, abilities, câmera e UI.
@@ -44,7 +54,7 @@ Para cada sistema, distinguir visão, contrato observável e implementação. Ho
 
 - **PRODUCT VISION:** perspectiva 3/4 elevada com profundidade perceptível e leitura espacial adequada a tela pequena, na família de composição de Diablo IV sem cópia visual.
 - **GAMEPLAY CONTRACT:** seguir o Player com rotação diagonal fixa inicialmente; manter Player, inimigos, projéteis, telegraphs, loot, rotas, POIs e extrações legíveis; não usar ortográfica/isométrica pura nem over-the-shoulder no gameplay normal.
-- **CURRENT IMPLEMENTATION:** `NONE`.
+- **CURRENT IMPLEMENTATION:** `GameplayCamera`, em `LateUpdate`, recebe apenas um target e concentra lente, órbita, rotação fixa, damping e offsets serializados.
 - **DECISION STATE:** família visual, perspectiva, seguimento, legibilidade, desacoplamento e substituibilidade `LOCKED`; valores do rig `TUNING / OPEN`.
 - **REVERSAL PATH:** câmera consome um target e configuração próprios; movimento e targeting não leem detalhes do rig, permitindo substituir sua implementação sem alterar gameplay.
 - **COUPLING RISK:** targeting, HUD, telegraphs e escala visual.
@@ -54,9 +64,9 @@ Para cada sistema, distinguir visão, contrato observável e implementação. Ho
 
 - **PRODUCT VISION:** baixa carga cognitiva sem remover precisão avançada.
 - **GAMEPLAY CONTRACT:** analógico esquerdo; ações do cluster direito; toque ataca por auto-target e arrasto mira manualmente.
-- **CURRENT IMPLEMENTATION:** `NONE`.
+- **CURRENT IMPLEMENTATION:** Canvas greybox com `VirtualJoystickControl`, `ManualAimDragControl`, `SafeAreaFitter` e `InputSystemUIInputModule`; mouse na Game View simula pointer/touch. Tap sem drag permanece sem ação e auto-target é `NONE`.
 - **DECISION STATE:** estrutura `LOCKED`; thresholds/layout `OPEN`.
-- **REVERSAL PATH:** gameplay consome ações/intents; bindings touch e fallback de editor permanecem adaptadores substituíveis.
+- **REVERSAL PATH:** gameplay consome ações/intents; UI, bindings touch e fallback de editor são adaptadores substituíveis. O placeholder direito pode virar botão de ataque sem alterar movement/facing.
 - **COUPLING RISK:** targeting, movement, abilities, HUD e device lifecycle.
 - **MIGRATION COST:** `MEDIUM` se gameplay depender diretamente de callbacks de UI; `LOW` com actions centralizadas.
 
@@ -165,7 +175,7 @@ Para cada sistema, distinguir visão, contrato observável e implementação. Ho
 
 - **PRODUCT VISION:** risco, custo, target e estado são compreensíveis em mobile sem aparência de painel administrativo.
 - **GAMEPLAY CONTRACT:** UI observa facades/view models e nunca possui a regra de gameplay.
-- **CURRENT IMPLEMENTATION:** `NONE`.
+- **CURRENT IMPLEMENTATION:** somente controles greybox de input; HUD de combate/produto permanece `NONE`.
 - **DECISION STATE:** informações essenciais `WORKING`; layout/feedback `OPEN`.
 - **REVERSAL PATH:** presentation substituível sobre modelos de leitura estáveis; debug separado do produto.
 - **COUPLING RISK:** todos os sistemas expostos ao jogador.

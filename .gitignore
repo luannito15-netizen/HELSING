@@ -56,3 +56,6 @@ sysinfo.txt
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Unity Android/Gradle build scratch
+.utmp/

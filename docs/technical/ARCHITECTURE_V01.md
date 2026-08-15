@@ -1,6 +1,6 @@
 # Arquitetura V01
 
-Esta arquitetura é `WORKING`, inicial e substituível. Nenhum gameplay próprio foi implementado no projeto Unity oficial até a consolidação deste documento. A visão define o resultado; classes, componentes e dados futuros são meios reversíveis.
+Esta arquitetura é `WORKING`, inicial e substituível. `CORE-001` introduziu a fundação de input, movimento, aim/facing e câmera; `CORE-002` acrescentou adaptadores greybox para analógico virtual e drag manual. Os demais sistemas continuam sem runtime próprio. A visão define o resultado, e classes, componentes e dados são meios reversíveis.
 
 Aplicar [Reversibility Architecture](REVERSIBILITY.md): contratos estáveis, responsabilidades pequenas, dependências explícitas e abstração somente quando houver necessidade concreta.
 
@@ -12,6 +12,10 @@ Responsável por:
 - estado do jogador;
 - conexão com input.
 
+Implementação atual: `PlayerMovement` consome intenção vetorial, usa `CharacterController` para deslocamento/colisão e aceita somente um `Transform` opcional como base planar. Velocidade, aceleração, desaceleração e gravidade são `TUNING / OPEN`.
+
+`PlayerMovement` não controla rotação. Movimento e aim/facing são responsabilidades independentes; velocidade, aceleração, desaceleração e gravidade permanecem `TUNING / OPEN`.
+
 ### Input
 Responsável por:
 - joystick;
@@ -21,6 +25,30 @@ Responsável por:
 - dash;
 - weapon swap;
 - Liberação.
+
+Implementação atual: `HelsingGameplay.inputactions` preserva WASD, setas, left stick e pointer. `PlayerInputReader` agrega esses bindings com `virtualMoveIntent` e `manualAimIntent`, dando prioridade aos adaptadores mobile somente enquanto estão ativos. Movimento e facing não conhecem controles concretos.
+
+### Aim / Facing
+
+Responsável por:
+
+- converter uma intenção de mira em direção planar válida;
+- orientar o Player sem mover o personagem ou controlar a câmera;
+- preservar e expor a última `AimDirection` válida para armas e poderes futuros.
+
+`LOCKED` — movimento não determina facing durante mira válida; mouse controla aim/facing no fallback desktop e o futuro arrasto manual touch alimentará o mesmo conceito de aim intent.
+
+Implementação atual: `PlayerAimFacing` projeta `PointerPosition` por um raio da câmera ou converte `manualAimIntent` em direção planar relativa à câmera. Drag ativo tem prioridade; após release, o componente preserva brevemente a última direção antes de devolver controle ao mouse. A câmera é dependência explícita de projeção, mas não conhece o componente de mira. Velocidade, janela após release, plano versus superfície, layers e distância mínima são `TUNING / OPEN`.
+
+### Mobile input UI
+
+Responsável por:
+
+- interpretar pointer/touch em intenção vetorial de movimento ou mira;
+- apresentar somente feedback greybox dos controles;
+- respeitar safe area e escala de resolução sem conter regras de gameplay.
+
+Implementação atual: `VirtualJoystickControl`, `ManualAimDragControl`, `SafeAreaFitter` e `InputSystemUiBootstrap` compõem um Canvas overlay em `Prototype_Arena_01`. Os controles dependem somente de `PlayerInputReader`; não referenciam `PlayerMovement`, `PlayerAimFacing` ou `GameplayCamera`. Tap sem drag é deliberadamente inerte até auto-target ser autorizado.
 
 ### Camera
 
@@ -32,6 +60,8 @@ Responsável por:
 - adaptar apresentação e obstáculos sem alterar regras de gameplay.
 
 O rig é um adaptador de apresentação. Movimento não lê seus valores internos, e targeting não depende de sua implementação concreta. Parâmetros permanecem `TUNING / OPEN`.
+
+Implementação atual: `GameplayCamera` recebe apenas um target, mantém projeção Perspective e follow em `LateUpdate`. Distância orbital, altura, pitch, yaw, FOV, damping e offsets permanecem serializados como `TUNING / OPEN`.
 
 ### Targeting
 Responsável por:
@@ -118,6 +148,8 @@ Regras adicionais:
 
 - separar definition imutável, runtime da run e profile persistente quando esses domínios existirem;
 - input expõe intenções e não bindings concretos;
+- movimento não escreve facing; aim/facing não move o Player nem controla a câmera;
+- UI de input escreve intents no reader e não chama componentes de gameplay;
 - câmera consome target/configuração próprios e não governa movimento ou targeting;
 - UI observa estado e não possui regra de gameplay;
 - apresentação de armas/poderes não define dano ou economia;
