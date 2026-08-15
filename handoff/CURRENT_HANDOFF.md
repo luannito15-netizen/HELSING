@@ -259,6 +259,36 @@ Validação executada por MCP com cliente HTTP próprio contra `127.0.0.1:8080`:
 
 `COMMIT: NOT RUN` — nada desta etapa foi commitado.
 
+### Rodada de combate — `DEVICE: PARCIAL`, `COMMIT: NOT RUN` (2026-08-15, fim da sessão)
+
+`OWNER: CLAUDE CODE` explícito. Implementada na ordem de prioridade dada pelo Game Director. **Não commitada de propósito**, para manter visível no histórico a fronteira entre o que foi validado em aparelho e o que não foi.
+
+Criados: `PlayerRespawn`, `EnemyChaseAttack`, `DashController`. Alterados: `PlayerInputReader` (intent de dash com direção), `VirtualJoystickControl` (gesto de dash), cena.
+
+- **Player mortal**: `Health` (100) + `PlayerRespawn` (2 s, volta ao ponto inicial). Movimento, ataque, mira e dash desligados enquanto morto. Não toca loadout nem perda — `RUN-002` segue `OPEN`. `DamageVisualFeedback` reaproveitado no `PlayerVisual` com `hideOnDeath=false`; a referência de `Health` teve de ser apontada à mão, porque o componente resolve `Health` apenas no próprio GameObject e o `Health` vive no pai.
+- **`EnemyChaseAttack`** nos três dummies: idle → persegue → ataca, com wind-up de `0,35 s` e distância reconferida no impacto, para que sair de perto realmente esquive. Sem pathfinding, sem aggro compartilhado. Famílias de inimigos e design de encontro continuam `OPEN`.
+- **Dash**: `DashController`, direção vinda do stick, `cooldown 0,9 s`, suspende `PlayerMovement` por `0,18 s` e mantém gravidade. **Sem custo de recurso** — Sangue e Almas são economia e seguem `OPEN`.
+
+Resultado do teste em aparelho pelo Game Director: **Player mortal PASS**, **respawn PASS**, **dash PASS parcial** (distância excessiva e gatilho ruim), **esquiva NOT RUN**.
+
+Ajustes aplicados depois desse teste e **ainda não validados em aparelho**: `distance 4.5 → 2.25`; gatilho trocado de duplo toque para **arrasto**, exigindo velocidade (`900`) **e** distância (`45`) simultâneas, com rearme de `0,25 s`. Todos `TUNING / OPEN`. O risco conhecido desse gesto é falso positivo durante corrida normal, levantado antes da escolha e aceito pelo Game Director como teste.
+
+Corrigido no mesmo passo, antes de chegar ao aparelho: a direção do dash passou a viajar junto com o pedido. Lida no momento da execução, um arrasto rápido termina antes e o stick já zerou, o que faria o dash sair na direção errada.
+
+`DEVICE: NOT RUN` para o dash por arrasto e para toda a esquiva. `REVIEW: NOT RUN`.
+
+### `PACOTE NÃO AUTORIZADO — com.unity.ai.assistant` (2026-08-15, 15:45)
+
+Detectado ao fim da sessão, **não introduzido pelo agente** e não autorizado por tarefa. Contraria `Do not touch`, que lista packages e versões.
+
+- Instalou o Unity App UI como dependência.
+- Criou `unity/Assets/Plugins/Android/AndroidManifest.xml`, que não existia.
+- **Trocou a activity de entrada do app** de `com.unity3d.player.UnityPlayerGameActivity` para `com.unity3d.player.appui.AppUIGameActivity`. O `adb shell am start` falhou com `Activity class does not exist` até a activity nova ser descoberta pelo `aapt2 dump badging`.
+- Alterou `Packages/manifest.json`, `packages-lock.json` e `ProjectSettings/GraphicsSettings.asset`; criou `ProjectSettings/Packages/com.unity.ai.assistant/Settings.json`.
+- Tempo de build subiu de ~200 s para ~570 s.
+
+Nenhuma dessas mudanças foi revertida — reverter é decisão de dependência e exige o Editor livre e autorização. **Recomendação:** remover o pacote, salvo se o Game Director quiser usá-lo; um assistente de IA no caminho crítico do APK é risco desnecessário para o build de produção. Qualquer script de lançamento automatizado precisa usar a activity nova enquanto o pacote existir.
+
 ## Known issues
 
 - `CORE-002` fechado no Editor. O único item pendente é `REAL DEVICE: NOT RUN` — teste touch em aparelho real, com dois dedos simultâneos, que nem o harness nem o mouse na Game View reproduzem. Continua obrigatório antes do beta mobile.

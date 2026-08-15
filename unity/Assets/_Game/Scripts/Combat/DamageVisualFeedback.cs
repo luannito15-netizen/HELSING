@@ -43,6 +43,7 @@ namespace Helsing.Combat
 
             health.Damaged += HandleDamaged;
             health.Died += HandleDied;
+            health.Restored += HandleRestored;
             ApplyTint();
         }
 
@@ -65,10 +66,26 @@ namespace Helsing.Combat
 
             health.Damaged -= HandleDamaged;
             health.Died -= HandleDied;
+            health.Restored -= HandleRestored;
         }
 
         private void HandleDamaged(Health source, float amount)
         {
+            ApplyTint();
+        }
+
+        /// <summary>
+        /// Repaints on revive. Required for anything that respawns without being deactivated —
+        /// the Player does exactly that, so without this it comes back alive but still tinted
+        /// with the colour it died in.
+        /// </summary>
+        private void HandleRestored(Health source)
+        {
+            if (hideOnDeath && !gameObject.activeSelf)
+            {
+                gameObject.SetActive(true);
+            }
+
             ApplyTint();
         }
 

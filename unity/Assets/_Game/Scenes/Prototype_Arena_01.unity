@@ -443,6 +443,9 @@ MonoBehaviour:
   deadZone: 0.15
   dynamicOrigin: 1
   hideWhenIdle: 1
+  swipeSpeedThreshold: 900
+  swipeMinDistance: 45
+  swipeRearmDelay: 0.25
 --- !u!114 &378656891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,6 +910,7 @@ GameObject:
   - component: {fileID: 563043721}
   - component: {fileID: 563043720}
   - component: {fileID: 563043725}
+  - component: {fileID: 563043726}
   m_Layer: 0
   m_Name: Dummy_East
   m_TagString: Untagged
@@ -1053,6 +1057,27 @@ MonoBehaviour:
   healthyColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
   hurtColor: {r: 0.85, g: 0.1, b: 0.1, a: 1}
   hideOnDeath: 1
+--- !u!114 &563043726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563043718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d5b3c9bdfa4f3e4a936c6986c2b8062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Combat.EnemyChaseAttack
+  health: {fileID: 0}
+  target: {fileID: 0}
+  detectionRange: 14
+  attackRange: 2.2
+  moveSpeed: 2.6
+  turnSpeed: 540
+  damage: 12
+  attackInterval: 1.2
+  attackWindUp: 0.35
 --- !u!1 &568857027
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,6 +1374,9 @@ GameObject:
   - component: {fileID: 684868635}
   - component: {fileID: 684868634}
   - component: {fileID: 684868636}
+  - component: {fileID: 684868639}
+  - component: {fileID: 684868638}
+  - component: {fileID: 684868637}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1521,6 +1549,59 @@ MonoBehaviour:
   width: 0.05
   startColour: {r: 1, g: 0.85, b: 0.4, a: 1}
   endColour: {r: 1, g: 0.3, b: 0.1, a: 0}
+--- !u!114 &684868637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684868627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d29a0b0b58e5a49ae9b0c1fd822e55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Player.DashController
+  inputReader: {fileID: 684868630}
+  characterController: {fileID: 684868631}
+  directionCamera: {fileID: 568857031}
+  movementToSuspend: {fileID: 684868629}
+  distance: 2.25
+  duration: 0.18
+  cooldown: 0.9
+  gravity: -25
+--- !u!114 &684868638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684868627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a732834a205e2e24892c2ead76c88508, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Player.PlayerRespawn
+  health: {fileID: 0}
+  characterController: {fileID: 0}
+  respawnDelay: 2
+  disableWhileDead:
+  - {fileID: 684868629}
+  - {fileID: 684868634}
+  - {fileID: 684868632}
+  - {fileID: 684868637}
+--- !u!114 &684868639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684868627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8305cf0ece815f841bb2b30a3a777131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Combat.Health
+  maxHealth: 100
 --- !u!1 &782049465
 GameObject:
   m_ObjectHideFlags: 0
@@ -1960,6 +2041,7 @@ GameObject:
   - component: {fileID: 1122488313}
   - component: {fileID: 1122488312}
   - component: {fileID: 1122488317}
+  - component: {fileID: 1122488318}
   m_Layer: 0
   m_Name: Dummy_SouthWest
   m_TagString: Untagged
@@ -2106,6 +2188,27 @@ MonoBehaviour:
   healthyColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
   hurtColor: {r: 0.85, g: 0.1, b: 0.1, a: 1}
   hideOnDeath: 1
+--- !u!114 &1122488318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122488310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d5b3c9bdfa4f3e4a936c6986c2b8062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Combat.EnemyChaseAttack
+  health: {fileID: 0}
+  target: {fileID: 0}
+  detectionRange: 14
+  attackRange: 2.2
+  moveSpeed: 2.6
+  turnSpeed: 540
+  damage: 12
+  attackInterval: 1.2
+  attackWindUp: 0.35
 --- !u!1 &1123658415
 GameObject:
   m_ObjectHideFlags: 0
@@ -2592,6 +2695,8 @@ GameObject:
   - component: {fileID: 1919643951}
   - component: {fileID: 1919643953}
   - component: {fileID: 1919643952}
+  - component: {fileID: 1919643955}
+  - component: {fileID: 1919643954}
   m_Layer: 0
   m_Name: PlayerVisual
   m_TagString: Untagged
@@ -2671,6 +2776,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919643950}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1919643954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1919643950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 169bac9a93b8cc749b5abb77438ac89b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Combat.DamageVisualFeedback
+  health: {fileID: 684868639}
+  targetRenderer: {fileID: 1919643952}
+  healthyColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  hurtColor: {r: 0.85, g: 0.1, b: 0.1, a: 1}
+  hideOnDeath: 0
+--- !u!114 &1919643955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1919643950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8305cf0ece815f841bb2b30a3a777131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Combat.Health
+  maxHealth: 100
 --- !u!114 &1925838187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2905,6 +3040,7 @@ GameObject:
   - component: {fileID: 2108169884}
   - component: {fileID: 2108169883}
   - component: {fileID: 2108169888}
+  - component: {fileID: 2108169889}
   m_Layer: 0
   m_Name: Dummy_North
   m_TagString: Untagged
@@ -3051,6 +3187,27 @@ MonoBehaviour:
   healthyColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
   hurtColor: {r: 0.85, g: 0.1, b: 0.1, a: 1}
   hideOnDeath: 1
+--- !u!114 &2108169889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108169881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d5b3c9bdfa4f3e4a936c6986c2b8062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Helsing.Combat.EnemyChaseAttack
+  health: {fileID: 0}
+  target: {fileID: 0}
+  detectionRange: 14
+  attackRange: 2.2
+  moveSpeed: 2.6
+  turnSpeed: 540
+  damage: 12
+  attackInterval: 1.2
+  attackWindUp: 0.35
 --- !u!1 &2132963016
 GameObject:
   m_ObjectHideFlags: 0

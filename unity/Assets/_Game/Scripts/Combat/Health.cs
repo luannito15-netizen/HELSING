@@ -27,6 +27,13 @@ namespace Helsing.Combat
         /// <summary>Raised exactly once, on the transition from alive to dead.</summary>
         public event Action<Health> Died;
 
+        /// <summary>
+        /// Raised when health is restored to full. Listeners that only react to damage would
+        /// otherwise keep showing the last damaged state after a revive, since nothing else
+        /// tells them the value changed upwards.
+        /// </summary>
+        public event Action<Health> Restored;
+
         private void Awake()
         {
             ResetHealth();
@@ -35,6 +42,7 @@ namespace Helsing.Combat
         public void ResetHealth()
         {
             currentHealth = maxHealth;
+            Restored?.Invoke(this);
         }
 
         /// <summary>

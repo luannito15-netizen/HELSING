@@ -34,9 +34,24 @@ namespace Helsing.UI
         [Tooltip("Hides the stick graphic while no finger is down. Only used in dynamic mode.")]
         [SerializeField] private bool hideWhenIdle = true;
 
+        [Header("Dash — TUNING / OPEN")]
+        [Tooltip("WORKING gesture: a flick of the thumb dashes in the direction it travelled. " +
+                 "Speed in rect units per second that a drag must exceed to count as a swipe.")]
+        [SerializeField, Min(1f)] private float swipeSpeedThreshold = 900f;
+
+        [Tooltip("Minimum travel for a swipe, so a fast jitter in place never dashes.")]
+        [SerializeField, Min(1f)] private float swipeMinDistance = 45f;
+
+        [Tooltip("Idle time after a dash gesture before another can be recognised. Guards " +
+                 "against one continuous flick registering several times.")]
+        [SerializeField, Min(0f)] private float swipeRearmDelay = 0.25f;
+
         private RectTransform controlRect;
         private int activePointerId = NoPointer;
         private Vector2 pointerOrigin;
+        private Vector2 lastSamplePoint;
+        private float lastSampleTime;
+        private float rearmTime;
 
         public bool IsActive => activePointerId != NoPointer;
 
@@ -73,6 +88,15 @@ namespace Helsing.UI
                 pointerOrigin = Vector2.zero;
             }
 
+            // The swipe baseline starts where the finger landed, so the very first drag
+            // sample cannot be measured against a stale point from a previous gesture.
+            if (TryGetLocalPoint(eventData, out Vector2 startPoint))
+            {
+                lastSamplePoint = startPoint;
+            }
+
+            lastSampleTime = Time.unscaledTime;
+
             UpdatePointer(eventData);
         }
 
@@ -94,6 +118,19 @@ namespace Helsing.UI
 
         public void OnCancel(BaseEventData eventData)
         {
+            Interrupt();
+        }
+
+        /// <summary>
+        /// Full reset for interrupted gestures. Unlike a normal pointer-up it also drops a
+        /// pending dash and forgets the first tap, so returning to the app cannot complete a
+        /// double tap that started before leaving it.
+        /// </summary>
+        private void Interrupt()
+        {
+            rearmTime = 0f;
+            lastSampleTime = 0f;
+            inputReader?.ClearDashRequest();
             ResetControl();
         }
 
@@ -109,6 +146,43 @@ namespace Helsing.UI
 
             float remappedMagnitude = Mathf.InverseLerp(deadZone, 1f, magnitude);
             return radialIntent.normalized * remappedMagnitude;
+        }
+
+        /// <summary>
+        /// Requests a dash when the thumb flicks: fast enough and far enough in one direction.
+        /// Both tests are needed — speed alone fires on a jitter in place, distance alone
+        /// fires on any ordinary run across the pad.
+        ///
+        /// The direction travels with the request because a flick often ends before the dash
+        /// is consumed, and the stick has zeroed by then.
+        /// </summary>
+        private void DetectSwipe(Vector2 localPoint)
+        {
+            float now = Time.unscaledTime;
+            float dt = now - lastSampleTime;
+
+            if (dt <= 0.0001f)
+            {
+                return;
+            }
+
+            Vector2 delta = localPoint - lastSamplePoint;
+            float travelled = delta.magnitude;
+            lastSamplePoint = localPoint;
+            lastSampleTime = now;
+
+            if (now < rearmTime)
+            {
+                return;
+            }
+
+            if (travelled < swipeMinDistance || travelled / dt < swipeSpeedThreshold)
+            {
+                return;
+            }
+
+            inputReader?.RequestDash(delta / travelled);
+            rearmTime = now + swipeRearmDelay;
         }
 
         private bool TryGetLocalPoint(PointerEventData eventData, out Vector2 localPoint)
@@ -129,6 +203,8 @@ namespace Helsing.UI
             {
                 return;
             }
+
+            DetectSwipe(localPoint);
 
             // Offset from where the thumb landed, not from the centre of the area, so a
             // dynamic stick tilts relative to its own origin.
@@ -188,7 +264,7 @@ namespace Helsing.UI
         {
             if (!hasFocus)
             {
-                ResetControl();
+                Interrupt();
             }
         }
 
@@ -196,7 +272,7 @@ namespace Helsing.UI
         {
             if (isPaused)
             {
-                ResetControl();
+                Interrupt();
             }
         }
 

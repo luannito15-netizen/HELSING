@@ -92,6 +92,49 @@ namespace Helsing.Input
             return true;
         }
 
+        private bool dashRequested;
+        private Vector2 dashDirection;
+
+        /// <summary>
+        /// Direction captured when the dash was requested, in stick space. Zero means the
+        /// gesture carried no usable direction and the consumer should fall back to facing.
+        /// </summary>
+        public Vector2 DashDirection => dashDirection;
+
+        /// <summary>
+        /// Requests a single dash in <paramref name="direction"/>. Raised by the movement
+        /// control on a swipe. The direction travels with the request on purpose: a quick
+        /// swipe can end before the dash is consumed, and by then the stick has already
+        /// returned to zero — reading it later would dash the wrong way.
+        /// </summary>
+        public void RequestDash(Vector2 direction)
+        {
+            dashRequested = true;
+            dashDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.zero;
+        }
+
+        /// <summary>Returns true exactly once per requested dash.</summary>
+        public bool ConsumeDash()
+        {
+            if (!dashRequested)
+            {
+                return false;
+            }
+
+            dashRequested = false;
+            return true;
+        }
+
+        /// <summary>
+        /// Drops a pending dash without consuming it as a real input. Used when a gesture is
+        /// interrupted, so leaving the app with a half-formed double tap never dashes on return.
+        /// </summary>
+        public void ClearDashRequest()
+        {
+            dashRequested = false;
+            dashDirection = Vector2.zero;
+        }
+
         private void OnEnable()
         {
             if (!TryResolveActions())
